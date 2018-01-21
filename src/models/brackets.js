@@ -2,6 +2,7 @@ const Joi = require('joi');
 const CreateModel = require('./model');
 const crypto = require('crypto');
 const extend = require('xtend');
+const partial = require('ap').partial;
 
 module.exports = MMRBracket;
 

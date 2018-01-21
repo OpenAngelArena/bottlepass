@@ -10,7 +10,7 @@ function TopPlayers (options) {
       .catch(next);
   }
 
-  function controllerAsync (req, res, opts) {
+  async function controllerAsync (req, res, opts) {
     var bracket = 1000;
     var currentBucket = await options.models.mmr.getOrCreate(bracket + '');
     var topPlayers = [];
