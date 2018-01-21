@@ -2,6 +2,7 @@ const sendJSON = require('send-data/json');
 const Jwt = require('jsonwebtoken');
 const Promise = require('bluebird');
 const Joi = require('joi');
+const Boom = require('boom');
 const MMR = require('../mmr');
 const AuthRequired = require('../auth');
 
@@ -33,12 +34,7 @@ function CompleteMatch (options) {
   }
 
   async function postControllerAsync (req, res, opts) {
-    console.log('Authed and ready to rock');
-
     var body = await jsonBody(req, res);
-
-    console.log(body);
-    console.log(req.matchid);
 
     body = CompleteMatchValidator.validate(body);
 
@@ -52,6 +48,9 @@ function CompleteMatch (options) {
     if (match.outcome) {
       throw Boom.badRequest('This match has already completed');
     }
+
+    console.log(body);
+    console.log(req.matchid);
 
     match.outcome = body.winner;
     match.endTime = body.endTime;
