@@ -4,6 +4,7 @@ const fs = require('fs');
 
 const Users = require('./users');
 const Matches = require('./match');
+const MMRBracket = require('./brackets');
 
 module.exports = Models;
 
@@ -17,9 +18,12 @@ function Models (options) {
   }
   var users = Users(createDB('users'));
   var matches = Matches(createDB('matches'));
+  var mmr = MMRBracket(createCB('mmr_bracket'));
+
   return {
     users: users,
-    matches: matches
+    matches: matches,
+    mmr: mmr
   };
 
   function createDB (name) {

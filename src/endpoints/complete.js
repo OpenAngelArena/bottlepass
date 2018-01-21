@@ -91,7 +91,10 @@ function CompleteMatch (options) {
   async function updateMMR (data) {
     var player = await options.models.users.getOrCreate(data.steamid);
 
+    await options.models.mmr.updateMMR(player, player.unrankedMMR, data.adjustedMMR);
+
     player.unrankedMMR = data.adjustedMMR;
+
     return options.models.users.put(player);
   }
 
