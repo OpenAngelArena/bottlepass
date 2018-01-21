@@ -31,6 +31,9 @@ async function updateMMR (model, steamid, previousMMR, mmr) {
   var newBracket = '' + model.bracketForMMR(mmr);
   var previousModel = await model.getOrCreate(previousBracket);
 
+  previousModel.players['[object Object]'] = null;
+  delete previousModel.players['[object Object]'];
+
   if (previousBracket == newBracket) {
     previousModel.players[steamid] = mmr;
     return model.put(previousModel);
