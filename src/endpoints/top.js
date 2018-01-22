@@ -43,6 +43,6 @@ function playersToList (players) {
       if (diff === 0) {
         return 0;
       }
-      return diff > 0 ? 1 : -1;
+      return diff > 0 ? -1 : 1;
     });
 }
