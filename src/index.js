@@ -36,6 +36,7 @@ router.set('/match/calculate', require('./endpoints/calculate')(options));
 router.set('/match/complete', require('./endpoints/complete')(options));
 router.set('/match/send_teams', require('./endpoints/send_teams')(options));
 router.set('/auth', require('./endpoints/auth')(options));
+router.set('/users/*', require('./endpoints/users')(options));
 router.set('/top', require('./endpoints/top')(options));
 
 var cors = Corsify({
@@ -59,6 +60,8 @@ function handler (req, res) {
           data: err
         });
       } else {
+        console.error('Uncaught non-boom error', err.stack || err);
+
         err = new Boom(err.message, {
           data: err
         });
