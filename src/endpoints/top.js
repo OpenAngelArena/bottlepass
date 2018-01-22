@@ -16,7 +16,7 @@ function TopPlayers (options) {
     var topPlayers = [];
 
     while (Object.keys(currentBucket.players).length) {
-      topPlayers = playersToList(currentBucket).concat(topPlayers);
+      topPlayers = playersToList(currentBucket.players).concat(topPlayers);
       topPlayers.splice(100);
 
       bracket = bracket + options.models.mmr.BRACKET_BUCKETS;
