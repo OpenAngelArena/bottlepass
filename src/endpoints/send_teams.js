@@ -1,5 +1,4 @@
 const sendJSON = require('send-data/json');
-const Jwt = require('jsonwebtoken');
 const Promise = require('bluebird');
 const Joi = require('joi');
 const partial = require('ap').partial;
@@ -38,7 +37,7 @@ function SendTeams (options) {
     body = SendTeamsValidator.validate(body);
 
     if (body.error) {
-      return cb(body.error);
+      throw body.error;
     }
     body = body.value;
 
@@ -48,10 +47,6 @@ function SendTeams (options) {
 
     await options.models.matches.put(match);
     await Promise.all(match.players.map(partial(updatePlayerEntry, req.matchid)));
-
-    match = await options.models.matches.get(req.matchid);
-
-    console.log(match);
 
     sendJSON(req, res, {
       ok: true

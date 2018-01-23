@@ -1,5 +1,4 @@
 const sendJSON = require('send-data/json');
-const Jwt = require('jsonwebtoken');
 const Promise = require('bluebird');
 const Joi = require('joi');
 const MMR = require('../mmr');
@@ -15,7 +14,6 @@ const CalculateValidator = Joi.object().keys({
 });
 
 module.exports = Calculate;
-
 
 function Calculate (options) {
   return {
@@ -39,7 +37,7 @@ function Calculate (options) {
     body = CalculateValidator.validate(body);
 
     if (body.error) {
-      return cb(body.error);
+      throw body.error;
     }
     body = body.value;
 

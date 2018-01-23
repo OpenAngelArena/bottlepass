@@ -1,10 +1,16 @@
 const sendJSON = require('send-data/json');
 const Jwt = require('jsonwebtoken');
 const Promise = require('bluebird');
+const Joi = require('joi');
 
 const jsonBody = Promise.promisify(require('body/json'));
 
 module.exports = Create;
+
+const AuthValidator = Joi.object().keys({
+  users: Joi.array().items(Joi.number().min(1)).min(1).required(),
+  gametime: Joi.string().required()
+});
 
 function Create (options) {
   return {
@@ -20,6 +26,13 @@ function Create (options) {
   async function postControllerAsync (req, res, opts) {
     var body = await jsonBody(req, res);
     console.log(body);
+    body = AuthValidator.validate(body);
+
+    if (body.error) {
+      throw body.error;
+    }
+    body = body.value;
+
     body.users = body.users.map((val) => val + '');
     var users = await Promise.all(body.users.map(async (steamid) => {
       return options.models.users.getOrCreate(steamid);
@@ -52,6 +65,7 @@ function Create (options) {
     sendJSON(req, res, {
       matchid: matchid,
       userData: userData,
+      match: match,
       token: token
     });
   }

@@ -1,4 +1,3 @@
-const sendError = require('send-boom');
 const Boom = require('boom');
 const Jwt = require('jsonwebtoken');
 

@@ -1,14 +1,11 @@
 const Joi = require('joi');
 const CreateModel = require('./model');
-const crypto = require('crypto');
-const extend = require('xtend');
 const partial = require('ap').partial;
 
 module.exports = MMRBracket;
 
 const BRACKET_BUCKETS = 100;
 
-const PlayerList = Joi.array().items(Joi.string()).default([]);
 const MMRBracketValidator = Joi.object().keys({
   // id as used in API's
   bracket: Joi.string().required(),
@@ -31,10 +28,7 @@ async function updateMMR (model, steamid, previousMMR, mmr) {
   var newBracket = '' + model.bracketForMMR(mmr);
   var previousModel = await model.getOrCreate(previousBracket);
 
-  previousModel.players['[object Object]'] = null;
-  delete previousModel.players['[object Object]'];
-
-  if (previousBracket == newBracket) {
+  if (previousBracket === newBracket) {
     previousModel.players[steamid] = mmr;
     return model.put(previousModel);
   } else {

@@ -21,6 +21,7 @@ function TopPlayers (options) {
 
       bracket = bracket + options.models.mmr.BRACKET_BUCKETS;
       currentBucket = await options.models.mmr.getOrCreate(bracket + '');
+      options.models.mmr.close(currentBucket);
     }
 
     sendJSON(req, res, {

@@ -65,8 +65,8 @@ function getExpectedScore (match) {
   }, 0);
   var team0AverageMMR = team0MMR / team0.length;
   var team1AverageMMR = team1MMR / team1.length;
-  var team0ExpectedScore = getElo(team0MMR, team1MMR);
-  var team1ExpectedScore = getElo(team1MMR, team0MMR);
+  var team0ExpectedScore = getElo(team0AverageMMR, team1AverageMMR);
+  var team1ExpectedScore = getElo(team1AverageMMR, team0AverageMMR);
 
   return [team0ExpectedScore, team1ExpectedScore];
 }
@@ -83,8 +83,8 @@ function processScores (match, score0, score1) {
   }, 0);
   var team0AverageMMR = team0MMR / team0.length;
   var team1AverageMMR = team1MMR / team1.length;
-  var team0ExpectedScore = getElo(team0MMR, team1MMR);
-  var team1ExpectedScore = getElo(team1MMR, team0MMR);
+  var team0ExpectedScore = getElo(team0AverageMMR, team1AverageMMR);
+  var team1ExpectedScore = getElo(team1AverageMMR, team0AverageMMR);
   var team0Score = score0 > score1 ? 0 : 1;
   var team1Score = 1 - team0Score;
   var team0K = getKFactor(team0AverageMMR);

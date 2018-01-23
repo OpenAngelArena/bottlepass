@@ -1,5 +1,4 @@
 const sendJSON = require('send-data/json');
-const Jwt = require('jsonwebtoken');
 const Promise = require('bluebird');
 const Joi = require('joi');
 const Boom = require('boom');
@@ -8,13 +7,11 @@ const AuthRequired = require('../auth');
 
 const jsonBody = Promise.promisify(require('body/json'));
 
-const PlayerEntry = Joi.string();
-
 const CompleteMatchValidator = Joi.object().keys({
   winner: Joi.string().only('dire', 'radiant'),
-  endTime: Joi.string(),
-  gameLength: Joi.number(),
-  players: Joi.array().items(Joi.string())
+  endTime: Joi.string().required(),
+  gameLength: Joi.number().min(1).required(),
+  players: Joi.array().items(Joi.string()).required()
 });
 
 module.exports = CompleteMatch;
@@ -58,12 +55,12 @@ function CompleteMatch (options) {
 
     await Promise.all(body.players.map(incrementGameCount));
 
-    if (match.players.length == 10) {
+    if (match.players.length === 10) {
       let mmrMatch = {
         radiant: await Promise.all(match.teams.radiant.map(getPlayerEntry)),
         dire: await Promise.all(match.teams.dire.map(getPlayerEntry))
-      }
-      if (body.winner == 'dire') {
+      };
+      if (body.winner === 'dire') {
         mmrMatch = MMR.processScores(mmrMatch, 1, 0);
       } else {
         mmrMatch = MMR.processScores(mmrMatch, 0, 1);

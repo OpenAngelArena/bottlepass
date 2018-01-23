@@ -16,6 +16,7 @@ function Users (options) {
 
     try {
       var user = await options.models.users.get(steamid);
+      options.models.users.close(user);
 
       return sendJSON(req, res, user);
     } catch (err) {
