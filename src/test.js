@@ -197,6 +197,48 @@ test('full server test', function (t) {
       t.fail('should be able to get top user list');
     }
 
+    await runMatch(t, [
+      USER_STR_6,
+      USER_STR_2,
+      USER_STR_3,
+      USER_STR_4,
+      USER_STR_5
+    ], [
+      USER_STR_1,
+      USER_STR_7,
+      USER_STR_8,
+      USER_STR_9,
+      USER_STR_0
+    ]);
+
+    await runMatch(t, [
+      USER_STR_1,
+      USER_STR_7,
+      USER_STR_8,
+      USER_STR_9,
+      USER_STR_5
+    ], [
+      USER_STR_6,
+      USER_STR_2,
+      USER_STR_3,
+      USER_STR_4,
+      USER_STR_0
+    ]);
+
+    await runMatch(t, [
+      USER_STR_1,
+      USER_STR_7,
+      USER_STR_8,
+      USER_STR_9,
+      USER_STR_5
+    ], [
+      USER_STR_6,
+      USER_STR_2,
+      USER_STR_3,
+      USER_STR_4,
+      USER_STR_0
+    ]);
+
     t.end();
   });
   t.test('end', function (t) {
@@ -224,4 +266,51 @@ async function get (path, data) {
     body: data || {},
     json: true
   });
+}
+
+async function runMatch (t, radiant, dire) {
+  var token = null;
+  try {
+    let data = await post('auth', {
+      users: ALL_PLAYERS,
+      gametime: (new Date()).toString() + Math.random()
+    });
+    t.ok(data.token, 'gets auth token');
+    t.ok(data.match, 'gets match data');
+    t.ok(data.userData, 'gets userdata with mmr values');
+    token = data.token;
+
+    Object.keys(data.userData).forEach(function (user) {
+      t.equals(data.userData[user].mmr, 1000, 'new user mmr is 1000');
+    });
+  } catch (e) {
+    t.fail('Should allow auth when all params are sent');
+  }
+
+  try {
+    let data =
+    await post('match/send_teams', {
+        radiant: radiant,
+        dire: dire
+      }, token);
+
+    t.ok(data.ok, 'should work');
+  } catch (e) {
+    console.log(e);
+    t.fail('Should be able to lock in teams');
+  }
+
+  try {
+    let data = await post('match/complete', {
+      winner: 'dire',
+      endTime: (new Date()).toString() + Math.random(),
+      gameLength: 123,
+      players: ALL_PLAYERS_STR
+    }, token);
+
+    t.ok(data.ok, 'should work');
+  } catch (e) {
+    console.log(e.error);
+    t.fail('Should be able to send in results');
+  }
 }
