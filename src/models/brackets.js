@@ -6,7 +6,7 @@ const SortedArray = require('sorted-array');
 
 module.exports = MMRRankings;
 
-const BRACKET_BUCKETS = 100;
+const BRACKET_BUCKETS = 1000;
 
 const MMRRankingsValidator = Joi.object().keys({
   // id as used in API's
@@ -46,49 +46,71 @@ function MMRRankings (db, users) {
     needsToRun = false;
     isRunning = true;
 
-    setTimeout(function () {
+    setTimeout(async function () {
       var hasReturned = false;
-      calculateBrackets(model, users, function () {
-        if (hasReturned) {
-          console.log('Returned twice into check update');
-          return;
-        }
-        hasReturned = true;
-        isRunning = false;
-        checkUpdateBrackets();
-      });
+      await calculateBrackets(model, users);
+      if (hasReturned) {
+        console.log('Returned twice into check update');
+        return;
+      }
+      hasReturned = true;
+      isRunning = false;
+      return checkUpdateBrackets();
     }, 5000);
   }
 }
 
 async function calculateBrackets (model, users, cb) {
-  console.log('CALCULATING BRACKETS');
-  var top100 = SortedArray.comparing((entry) => 0 - entry.mmr, []);
+  var maxMMR = false;
+  var curRanking = 0;
 
-  users.createReadStream()
-    .on('data', function (data) {
-      var userData = JSON.parse(data.value);
-      top100.insert({
-        steamid: userData.steamid,
-        mmr: userData.unrankedMMR
-      });
-      top100.array.splice(100);
-    })
-    .on('error', function (err) {
-      console.log('Error reading users!', err);
-    })
-    .on('end', async function () {
-      console.log('Finished calculating top MMR');
-      ranking = 1;
-      top100.array.forEach(function (playerEntry) {
-        playerEntry.ranking = ranking++;
-      });
+  return checkMoreUsers();
+
+  async function checkMoreUsers () {
+    console.log('Writing next ranking batch of players... ' + curRanking);
+    var players = await calculateBracketsAfter(model, users, maxMMR, curRanking);
+    if (players.length) {
       await model.put({
-        bracket: '0',
-        players: top100.array
+        bracket: '' + curRanking,
+        players: players
       });
-      cb();
-    });
+      maxMMR = players[players.length - 1].mmr;
+      curRanking = curRanking + BRACKET_BUCKETS;
+      return checkMoreUsers;
+    }
+  }
+}
+async function calculateBracketsAfter (model, users, afterMMR, ranking) {
+  if (!ranking) {
+    ranking = 0;
+  }
+  return new Promise(function (resolve, reject) {
+    console.log('CALCULATING BRACKETS');
+    var top100 = SortedArray.comparing((entry) => 0 - entry.mmr, []);
+
+    users.createReadStream()
+      .on('data', function (data) {
+        var userData = JSON.parse(data.value);
+        if (!afterMMR || userData.unrankedMMR > afterMMR) {
+          top100.insert({
+            steamid: userData.steamid,
+            mmr: userData.unrankedMMR
+          });
+          top100.array.splice(BRACKET_BUCKETS);
+        }
+      })
+      .on('error', function (err) {
+        console.log('Error reading users!', err);
+        reject(err);
+      })
+      .on('end', async function () {
+        console.log('Finished calculating top MMR');
+        top100.array.forEach(function (playerEntry) {
+          playerEntry.ranking = ++ranking;
+        });
+        resolve(top100.array);
+      });
+  });
 }
 
 function bracketForRanking (mmr) {
