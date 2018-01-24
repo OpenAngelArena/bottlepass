@@ -46,7 +46,6 @@ function CreateModel (ModelValidator, idkey, db) {
     }
     try {
       var data = await get(db, id);
-      console.log(data);
       return data;
     } catch (err) {
       if (err.notFound) {
