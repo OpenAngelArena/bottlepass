@@ -87,12 +87,12 @@ function CompleteMatch (options) {
 
   async function updateMMR (data) {
     var player = await options.models.users.getOrCreate(data.steamid);
-
-    await options.models.mmr.updateMMR(player.steamid, player.unrankedMMR, data.adjustedMMR);
-
+    var oldMMR = player.unrankedMMR;
     player.unrankedMMR = data.adjustedMMR;
 
-    return options.models.users.put(player);
+    await options.models.users.put(player);
+
+    return options.models.mmr.updateMMR(player.steamid, player.unrankedMMR, data.adjustedMMR);
   }
 
   async function getPlayerEntry (steamid) {

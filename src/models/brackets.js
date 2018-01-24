@@ -46,16 +46,18 @@ function MMRRankings (db, users) {
     needsToRun = false;
     isRunning = true;
 
-    var hasReturned = false;
-    calculateBrackets(model, users, function () {
-      if (hasReturned) {
-        console.log('Returned twice into check update');
-        return;
-      }
-      hasReturned = true;
-      isRunning = false;
-      checkUpdateBrackets();
-    });
+    setTimeout(function () {
+      var hasReturned = false;
+      calculateBrackets(model, users, function () {
+        if (hasReturned) {
+          console.log('Returned twice into check update');
+          return;
+        }
+        hasReturned = true;
+        isRunning = false;
+        checkUpdateBrackets();
+      });
+    }, 5000);
   }
 }
 
