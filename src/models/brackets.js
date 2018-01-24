@@ -66,11 +66,11 @@ async function calculateBrackets (model, users, cb) {
   async function checkMoreUsers (maxMMR, curRanking) {
     console.log('Writing next ranking batch of players... ' + curRanking + ' / ' + maxMMR);
     var players = await calculateBracketsAfter(model, users, maxMMR, curRanking);
+    await model.put({
+      bracket: '' + curRanking,
+      players: players
+    });
     if (players.length) {
-      await model.put({
-        bracket: '' + curRanking,
-        players: players
-      });
       return checkMoreUsers(players[players.length - 1].mmr, curRanking + BRACKET_BUCKETS);
     }
   }
