@@ -61,22 +61,17 @@ function MMRRankings (db, users) {
 }
 
 async function calculateBrackets (model, users, cb) {
-  var maxMMR = false;
-  var curRanking = 0;
+  return checkMoreUsers(false, 0);
 
-  return checkMoreUsers();
-
-  async function checkMoreUsers () {
-    console.log('Writing next ranking batch of players... ' + curRanking);
+  async function checkMoreUsers (maxMMR, curRanking) {
+    console.log('Writing next ranking batch of players... ' + curRanking + ' / ' + maxMMR);
     var players = await calculateBracketsAfter(model, users, maxMMR, curRanking);
     if (players.length) {
       await model.put({
         bracket: '' + curRanking,
         players: players
       });
-      maxMMR = players[players.length - 1].mmr;
-      curRanking = curRanking + BRACKET_BUCKETS;
-      return checkMoreUsers();
+      return checkMoreUsers(players[players.length - 1].mmr, curRanking + BRACKET_BUCKETS);
     }
   }
 }
@@ -91,7 +86,7 @@ async function calculateBracketsAfter (model, users, afterMMR, ranking) {
     users.createReadStream()
       .on('data', function (data) {
         var userData = JSON.parse(data.value);
-        if (!afterMMR || userData.unrankedMMR > afterMMR) {
+        if (!afterMMR || userData.unrankedMMR < afterMMR) {
           top100.insert({
             steamid: userData.steamid,
             mmr: userData.unrankedMMR
