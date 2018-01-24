@@ -11,7 +11,14 @@ function TopPlayers (options) {
   }
 
   async function controllerAsync (req, res, opts) {
-    var currentBucket = await options.models.mmr.getOrCreate('0');
+    var topGroup = Number(opts.splat.substr(3));
+
+    if (!Number.isFinite(topGroup)) {
+      topGroup = 0;
+    }
+    topGroup = options.models.mmr.bracketForRanking(~~topGroup);
+
+    var currentBucket = await options.models.mmr.getOrCreate('' + topGroup);
 
     sendJSON(req, res, {
       topPlayers: currentBucket.players

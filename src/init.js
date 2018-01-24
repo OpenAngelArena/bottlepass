@@ -28,7 +28,7 @@ function Init (options) {
   router.set('/match/send_teams', require('./endpoints/send_teams')(options));
   router.set('/auth', require('./endpoints/auth')(options));
   router.set('/users/*', require('./endpoints/users')(options));
-  router.set('/top', require('./endpoints/top')(options));
+  router.set('/top*', require('./endpoints/top')(options));
 
   var cors = Corsify({
     'Access-Control-Allow-Headers': 'X-Auth-Token, Content-Type'
