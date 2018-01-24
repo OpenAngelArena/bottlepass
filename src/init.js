@@ -40,6 +40,7 @@ function Init (options) {
   return server;
 
   function handler (req, res) {
+    console.log(req.url);
     router(req, res, {}, onError);
 
     function onError (err, data) {
