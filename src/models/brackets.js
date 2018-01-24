@@ -76,7 +76,7 @@ async function calculateBrackets (model, users, cb) {
       });
       maxMMR = players[players.length - 1].mmr;
       curRanking = curRanking + BRACKET_BUCKETS;
-      return checkMoreUsers;
+      return checkMoreUsers();
     }
   }
 }
