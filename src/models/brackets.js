@@ -79,7 +79,6 @@ async function calculateBrackets (model, users, cb) {
     })
     .on('end', async function () {
       console.log('Finished calculating top MMR');
-      console.log(top100.array);
       ranking = 1;
       top100.array.forEach(function (playerEntry) {
         playerEntry.ranking = ranking++;
