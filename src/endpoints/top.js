@@ -11,39 +11,10 @@ function TopPlayers (options) {
   }
 
   async function controllerAsync (req, res, opts) {
-    var bracket = 900;
-    var currentBucket = await options.models.mmr.getOrCreate(bracket + '');
-    var topPlayers = [];
-
-    while (Object.keys(currentBucket.players).length) {
-      topPlayers = playersToList(currentBucket.players).concat(topPlayers);
-      topPlayers.splice(100);
-
-      bracket = bracket + options.models.mmr.BRACKET_BUCKETS;
-      currentBucket = await options.models.mmr.getOrCreate(bracket + '');
-      options.models.mmr.close(currentBucket);
-    }
+    var currentBucket = await options.models.mmr.getOrCreate('0');
 
     sendJSON(req, res, {
-      topPlayers: topPlayers
+      topPlayers: currentBucket.players
     });
   }
-}
-
-function playersToList (players) {
-  return Object.keys(players)
-    .map(function (player) {
-      return {
-        steamid: player,
-        mmr: players[player]
-      };
-    })
-    .sort(function (a, b) {
-      var diff = a.mmr - b.mmr;
-
-      if (diff === 0) {
-        return 0;
-      }
-      return diff > 0 ? -1 : 1;
-    });
 }

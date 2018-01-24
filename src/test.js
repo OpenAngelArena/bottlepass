@@ -211,19 +211,13 @@ test('full server test', function (t) {
       USER_STR_0
     ]);
 
-    await runMatch(t, [
-      USER_STR_1,
-      USER_STR_7,
-      USER_STR_8,
-      USER_STR_9,
-      USER_STR_5
-    ], [
-      USER_STR_6,
-      USER_STR_2,
-      USER_STR_3,
-      USER_STR_4,
-      USER_STR_0
-    ]);
+    try {
+      let data = await get('top');
+      console.log(data);
+    } catch (e) {
+      console.log(e.error);
+      t.fail('should be able to get top user list');
+    }
 
     await runMatch(t, [
       USER_STR_1,
@@ -238,6 +232,58 @@ test('full server test', function (t) {
       USER_STR_4,
       USER_STR_0
     ]);
+
+    try {
+      let data = await get('top');
+      console.log(data);
+    } catch (e) {
+      console.log(e.error);
+      t.fail('should be able to get top user list');
+    }
+
+    await runMatch(t, [
+      USER_STR_1,
+      USER_STR_7,
+      USER_STR_8,
+      USER_STR_9,
+      USER_STR_5
+    ], [
+      USER_STR_6,
+      USER_STR_2,
+      USER_STR_3,
+      USER_STR_4,
+      USER_STR_0
+    ]);
+
+    try {
+      let data = await get('top');
+      console.log(data);
+    } catch (e) {
+      console.log(e.error);
+      t.fail('should be able to get top user list');
+    }
+
+    await runMatch(t, [
+      USER_STR_1,
+      USER_STR_7,
+      USER_STR_8,
+      USER_STR_9,
+      USER_STR_0
+    ], [
+      USER_STR_6,
+      USER_STR_2,
+      USER_STR_3,
+      USER_STR_4,
+      USER_STR_5
+    ]);
+
+    try {
+      let data = await get('top');
+      console.log(data);
+    } catch (e) {
+      console.log(e.error);
+      t.fail('should be able to get top user list');
+    }
 
     t.end();
   });

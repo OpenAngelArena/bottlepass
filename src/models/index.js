@@ -18,7 +18,7 @@ function Models (options) {
   }
   var users = Users(createDB('users'));
   var matches = Matches(createDB('matches'));
-  var mmr = MMRBracket(createDB('mmr_bracket'));
+  var mmr = MMRBracket(createDB('mmr_bracket'), users);
 
   return {
     users: users,
