@@ -26,7 +26,7 @@ function MMRRankings (db, users) {
   var needsToRun = true;
 
   model.bracketForRanking = bracketForRanking;
-  model.updateMMR = checkUpdateBrackets;
+  model.updateMMR = needsUpdateBrackets;
 
   model.BRACKET_BUCKETS = BRACKET_BUCKETS;
 
@@ -47,13 +47,7 @@ function MMRRankings (db, users) {
     isRunning = true;
 
     setTimeout(async function () {
-      var hasReturned = false;
       await calculateBrackets(model, users);
-      if (hasReturned) {
-        console.log('Returned twice into check update');
-        return;
-      }
-      hasReturned = true;
       isRunning = false;
       return checkUpdateBrackets();
     }, 5000);
@@ -75,6 +69,7 @@ async function calculateBrackets (model, users, cb) {
     }
   }
 }
+
 async function calculateBracketsAfter (model, users, afterMMR, ranking) {
   if (!ranking) {
     ranking = 0;
