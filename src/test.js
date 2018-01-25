@@ -2,6 +2,7 @@ const test = require('tape');
 const path = require('path');
 const request = require('request-promise');
 const rimraf = require('rimraf');
+const Promise = require('bluebird');
 
 const Init = require('./init');
 
@@ -189,9 +190,16 @@ test('full server test', function (t) {
       t.fail('should be able to get user data');
     }
 
+    await wait(1000);
+
     try {
       let data = await get('top');
-      console.log(data);
+      t.equals(data.topPlayers.length, 10, 'has top players');
+      let preMMR = data.topPlayers[0].mmr;
+      data.topPlayers.forEach(function (player) {
+        t.ok(player.mmr <= preMMR, 'mmr is sorted in top players');
+        preMMR = player.mmr;
+      });
     } catch (e) {
       console.log(e.error);
       t.fail('should be able to get top user list');
@@ -213,7 +221,12 @@ test('full server test', function (t) {
 
     try {
       let data = await get('top');
-      console.log(data);
+      t.equals(data.topPlayers.length, 10, 'has top players');
+      let preMMR = data.topPlayers[0].mmr;
+      data.topPlayers.forEach(function (player) {
+        t.ok(player.mmr <= preMMR, 'mmr is sorted in top players');
+        preMMR = player.mmr;
+      });
     } catch (e) {
       console.log(e.error);
       t.fail('should be able to get top user list');
@@ -235,7 +248,12 @@ test('full server test', function (t) {
 
     try {
       let data = await get('top');
-      console.log(data);
+      t.equals(data.topPlayers.length, 10, 'has top players');
+      let preMMR = data.topPlayers[0].mmr;
+      data.topPlayers.forEach(function (player) {
+        t.ok(player.mmr <= preMMR, 'mmr is sorted in top players');
+        preMMR = player.mmr;
+      });
     } catch (e) {
       console.log(e.error);
       t.fail('should be able to get top user list');
@@ -257,7 +275,12 @@ test('full server test', function (t) {
 
     try {
       let data = await get('top');
-      console.log(data);
+      t.equals(data.topPlayers.length, 10, 'has top players');
+      let preMMR = data.topPlayers[0].mmr;
+      data.topPlayers.forEach(function (player) {
+        t.ok(player.mmr <= preMMR, 'mmr is sorted in top players');
+        preMMR = player.mmr;
+      });
     } catch (e) {
       console.log(e.error);
       t.fail('should be able to get top user list');
@@ -359,4 +382,10 @@ async function runMatch (t, radiant, dire) {
     console.log(e.error);
     t.fail('Should be able to send in results');
   }
+}
+
+async function wait (ms) {
+  return new Promise(function (resolve, reject) {
+    setTimeout(resolve, ms);
+  });
 }

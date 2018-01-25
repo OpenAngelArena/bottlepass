@@ -1,8 +1,7 @@
 const Joi = require('joi');
 const CreateModel = require('./model');
-const partial = require('ap').partial;
-const Event = require('geval/event');
 const SortedArray = require('sorted-array');
+// const partial = require('ap').partial;
 
 module.exports = MMRRankings;
 
@@ -19,7 +18,6 @@ const MMRRankingsValidator = Joi.object().keys({
 });
 
 function MMRRankings (db, users) {
-  const updateBracketEvent = Event();
   var model = CreateModel(MMRRankingsValidator, 'bracket', db);
 
   var isRunning = false;
@@ -39,18 +37,16 @@ function MMRRankings (db, users) {
     checkUpdateBrackets();
   }
 
-  function checkUpdateBrackets () {
+  async function checkUpdateBrackets () {
     if (isRunning || !needsToRun) {
       return;
     }
     needsToRun = false;
     isRunning = true;
 
-    setTimeout(async function () {
-      await calculateBrackets(model, users);
-      isRunning = false;
-      return checkUpdateBrackets();
-    }, 5000);
+    await calculateBrackets(model, users);
+    isRunning = false;
+    return checkUpdateBrackets();
   }
 }
 
