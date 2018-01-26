@@ -47,7 +47,7 @@ function addUserProperty (model, name, prop) {
     return async function get (id, data) {
       return Promise.all([
         method(id, data),
-        prop.getOrCreate(id, data)
+        prop.getOrCreate(id, true)
       ]).spread(function (user, propData) {
         user[name] = propData;
 

@@ -30,13 +30,13 @@ function Profile (options, db, users) {
 
   return model;
 
-  async function getOrCreate (id) {
+  async function getOrCreate (id, requeue) {
     var data = await oldGetOrCreate(id, {
       lastUpdated: Date.now()
     });
     if (!data.name) {
       data = await queueProfileRead(options, model, id);
-    } else if (Date.now() - data.lastUpdated > 60000) {
+    } else if (requeue && Date.now() - data.lastUpdated > 60000) {
       queueProfileRead(options, model, id);
     }
 
@@ -83,6 +83,7 @@ async function checkRequestUsers (options, model) {
 
 async function getUserProfiles (options, model) {
   var idList = Object.keys(idQueue);
+  idQueue = {};
   if (!idList.length) {
     return;
   }
