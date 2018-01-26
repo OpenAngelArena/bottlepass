@@ -13,11 +13,12 @@ const MMRRankingsValidator = Joi.object().keys({
   players: Joi.array().items(Joi.object().keys({
     ranking: Joi.number().required(),
     steamid: Joi.string().required(),
-    mmr: Joi.number().required()
+    mmr: Joi.number().required(),
+    name: Joi.string()
   })).default([])
 });
 
-function MMRRankings (db, users) {
+function MMRRankings (db, users, profiles) {
   var model = CreateModel(MMRRankingsValidator, 'bracket', db);
 
   var isRunning = false;
@@ -44,18 +45,25 @@ function MMRRankings (db, users) {
     needsToRun = false;
     isRunning = true;
 
-    await calculateBrackets(model, users);
+    await calculateBrackets(model, users, profiles);
     isRunning = false;
     return checkUpdateBrackets();
   }
 }
 
-async function calculateBrackets (model, users, cb) {
+async function calculateBrackets (model, users, profiles) {
   return checkMoreUsers(false, 0);
 
   async function checkMoreUsers (maxMMR, curRanking) {
     console.log('Writing next ranking batch of players... ' + curRanking + ' / ' + maxMMR);
     var players = await calculateBracketsAfter(model, users, maxMMR, curRanking);
+    await Promise.all(players.map(async function (player) {
+      var profile = await profiles.getOrCreate(player.steamid);
+      if (profile) {
+        player.name = profile.name;
+      }
+      return player;
+    }));
     await model.put({
       bracket: '' + curRanking,
       players: players

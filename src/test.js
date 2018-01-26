@@ -95,6 +95,7 @@ test('full server test', function (t) {
         t.equals(data.userData[user].mmr, 1000, 'new user mmr is 1000');
       });
     } catch (e) {
+      console.log(e.error);
       t.fail('Should allow auth when all params are sent');
     }
 
@@ -346,7 +347,7 @@ async function get (path, data) {
   return request({
     method: 'GET',
     uri: 'http://localhost:' + TEST_PORT + '/' + path,
-    body: data || {},
+    qs: data || {},
     json: true
   });
 }

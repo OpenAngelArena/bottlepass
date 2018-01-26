@@ -1,4 +1,6 @@
 const Joi = require('joi');
+const Promise = require('bluebird');
+const partial = require('ap').partial;
 const CreateModel = require('./model');
 
 module.exports = User;
@@ -24,5 +26,38 @@ const UserValidator = Joi.object().keys({
 });
 
 function User (db) {
-  return CreateModel(UserValidator, 'steamid', db);
+  var user = CreateModel(UserValidator, 'steamid', db);
+
+  user.addUserProperty = partial(addUserProperty, user);
+
+  return user;
+}
+
+function addUserProperty (model, name, prop) {
+  var oldGet = model.get;
+  var oldGetOrCreate = model.getOrCreate;
+  var oldPut = model.put;
+
+  model.get = getter(oldGet);
+  model.getOrCreate = getter(oldGetOrCreate);
+
+  model.put = put;
+
+  function getter (method) {
+    return async function get (id, data) {
+      return Promise.all([
+        method(id, data),
+        prop.getOrCreate(id, data)
+      ]).spread(function (user, propData) {
+        user[name] = propData;
+
+        return user;
+      });
+    };
+  }
+
+  async function put (data) {
+    delete data[name];
+    return oldPut(data);
+  }
 }
