@@ -21,7 +21,9 @@ function TopPlayers (options) {
     var currentBucket = await options.models.mmr.getOrCreate('' + topGroup);
 
     sendJSON(req, res, {
-      topPlayers: currentBucket.players
+      body: currentBucket.players,
+      pretty: true,
+      statusCode: 200
     });
   }
 }
