@@ -50,7 +50,9 @@ var idQueue = {};
 async function queueProfileRead (options, model, steamid) {
   var id64 = IDConvertor.to64(steamid);
 
-  console.log('queueing ', steamid);
+  if (!idQueue[id64]) {
+    console.log('queueing ', steamid);
+  }
 
   idQueue[id64] = true;
 
@@ -77,6 +79,7 @@ async function queueProfileRead (options, model, steamid) {
 async function checkRequestUsers (options, model) {
   if (!runningRequest) {
     runningRequest = getUserProfiles(options, model);
+    runningRequest.then(() => runningRequest = null);
   }
   return runningRequest;
 }
@@ -117,6 +120,10 @@ async function getUserProfiles (options, model) {
   }));
 
   await wait(1000);
+
+  if (Object.keys(idQueue).length) {
+    setTimeout(partial(checkRequestUsers, options, model));
+  }
 
   return result;
 }

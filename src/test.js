@@ -199,9 +199,9 @@ test('full server test', function (t) {
 
     try {
       let data = await get('top');
-      t.equals(data.topPlayers.length, 10, 'has top players');
-      let preMMR = data.topPlayers[0].mmr;
-      data.topPlayers.forEach(function (player) {
+      t.equals(data.length, 10, 'has top players');
+      let preMMR = data[0].mmr;
+      data.forEach(function (player) {
         t.ok(player.mmr <= preMMR, 'mmr is sorted in top players');
         preMMR = player.mmr;
       });
@@ -236,9 +236,9 @@ test('full server test', function (t) {
 
     try {
       let data = await get('top');
-      t.equals(data.topPlayers.length, 10, 'has top players');
-      let preMMR = data.topPlayers[0].mmr;
-      data.topPlayers.forEach(function (player) {
+      t.equals(data.length, 10, 'has top players');
+      let preMMR = data[0].mmr;
+      data.forEach(function (player) {
         t.ok(player.mmr <= preMMR, 'mmr is sorted in top players');
         preMMR = player.mmr;
       });
@@ -263,9 +263,9 @@ test('full server test', function (t) {
 
     try {
       let data = await get('top');
-      t.equals(data.topPlayers.length, 10, 'has top players');
-      let preMMR = data.topPlayers[0].mmr;
-      data.topPlayers.forEach(function (player) {
+      t.equals(data.length, 10, 'has top players');
+      let preMMR = data[0].mmr;
+      data.forEach(function (player) {
         t.ok(player.mmr <= preMMR, 'mmr is sorted in top players');
         preMMR = player.mmr;
       });
@@ -290,9 +290,9 @@ test('full server test', function (t) {
 
     try {
       let data = await get('top');
-      t.equals(data.topPlayers.length, 10, 'has top players');
-      let preMMR = data.topPlayers[0].mmr;
-      data.topPlayers.forEach(function (player) {
+      t.equals(data.length, 10, 'has top players');
+      let preMMR = data[0].mmr;
+      data.forEach(function (player) {
         t.ok(player.mmr <= preMMR, 'mmr is sorted in top players');
         preMMR = player.mmr;
       });

@@ -33,19 +33,18 @@ function MMRRankings (db, users, profiles) {
 
   return model;
 
-  function needsUpdateBrackets () {
+  async function needsUpdateBrackets () {
     needsToRun = true;
-    checkUpdateBrackets();
+    return checkUpdateBrackets();
   }
 
   async function checkUpdateBrackets () {
     if (isRunning || !needsToRun) {
-      return;
+      return isRunning;
     }
     needsToRun = false;
-    isRunning = true;
-
-    await calculateBrackets(model, users, profiles);
+    isRunning = calculateBrackets(model, users, profiles);
+    await isRunning;
     isRunning = false;
     return checkUpdateBrackets();
   }

@@ -68,6 +68,7 @@ function Init (options) {
           });
         }
       }
+      console.log(err);
       sendBoom(req, res, err);
     }
   }
