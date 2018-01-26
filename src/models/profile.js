@@ -40,8 +40,6 @@ function Profile (options, db, users) {
       queueProfileRead(options, model, id);
     }
 
-    console.log('Profile data', data);
-
     return data;
   }
 }
@@ -61,7 +59,6 @@ async function queueProfileRead (options, model, steamid) {
   }
   await wait(1000);
   var userData = await checkRequestUsers(options, model);
-  console.log('userdata', userData);
 
   if (!userData[id64]) {
     userData[id64] = {

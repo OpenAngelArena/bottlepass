@@ -28,7 +28,6 @@ function CreateModel (ModelValidator, idkey, db) {
   async function get (db, id) {
     var data = await db.get(id);
     data = JSON.parse(data);
-    console.log(data);
 
     var result = ModelValidator.validate(data);
 
