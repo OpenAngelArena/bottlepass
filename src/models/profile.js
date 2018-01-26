@@ -2,7 +2,7 @@ const Joi = require('joi');
 const CreateModel = require('./model');
 const IDConvertor = require('steam-id-convertor');
 const request = require('request-promise');
-
+const partial = require('ap').partial;
 module.exports = Profile;
 
 const ProfileValidator = Joi.object().keys({
