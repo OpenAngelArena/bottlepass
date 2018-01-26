@@ -56,7 +56,7 @@ async function queueProfileRead (options, model, steamid) {
   var id64 = IDConvertor.to64(steamid);
 
   if (!idQueue[id64]) {
-    console.log('queueing ', steamid);
+    console.log('queueing ', steamid, id64);
   }
 
   idQueue[id64] = true;
@@ -91,13 +91,13 @@ async function checkRequestUsers (options, model) {
 
 async function getUserProfiles (options, model) {
   var idList = Object.keys(idQueue).splice(20);
-  idList.forEach(function (id) {
-    delete idQueue[id];
-  });
   if (!idList.length) {
     console.log('Theres no id list');
     return;
   }
+  idList.forEach(function (id) {
+    delete idQueue[id];
+  });
   var url = 'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=' + options.steamkey + '&steamids=' + idList.join(',');
 
   console.log(url);
