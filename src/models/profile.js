@@ -112,7 +112,7 @@ async function getUserProfiles (options, model) {
       steam64Id: player.steamid,
       name: player.personaname,
       profileurl: player.profileurl,
-      avatar: player.avatar,
+      avatar: player.avatarfull,
       lastUpdated: Date.now()
     };
 
