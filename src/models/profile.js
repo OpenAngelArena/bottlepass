@@ -31,7 +31,7 @@ function Profile (options, db, users) {
   return model;
 
   async function getOrCreate (id, requeue) {
-    if (id === 0) {
+    if (Number(id) === 0) {
       return {
         name: 'Dota 2 Bot'
       };
