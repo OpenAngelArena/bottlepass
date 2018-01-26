@@ -60,6 +60,9 @@ async function queueProfileRead (options, model, steamid) {
   await wait(1000);
   var userData = await checkRequestUsers(options, model);
 
+  if (!userData) {
+    userData = {};
+  }
   if (!userData[id64]) {
     userData[id64] = {
       lastUpdated: Date.now(),
@@ -81,9 +84,10 @@ async function checkRequestUsers (options, model) {
 async function getUserProfiles (options, model) {
   var idList = Object.keys(idQueue).splice(20);
   idList.forEach(function (id) {
-    idQueue[id] = false;
+    delete idQueue[id];
   });
   if (!idList.length) {
+    console.log('Theres no id list');
     return;
   }
   var url = 'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=' + options.steamkey + '&steamids=' + idList.join(',');
@@ -96,7 +100,7 @@ async function getUserProfiles (options, model) {
     json: true
   });
 
-  console.log(data);
+  console.log('Request complete, data: ', data);
   var result = {};
 
   await Promise.all(data.response.players.map(async function (player) {
