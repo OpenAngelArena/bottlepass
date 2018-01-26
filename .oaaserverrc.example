@@ -1,2 +1,4 @@
 # port number to listen on
 port=6969
+steamkey=ABCDEF1234567890ABCDEF1234567890
+secret="dont tell anyone"

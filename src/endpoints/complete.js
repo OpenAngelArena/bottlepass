@@ -2,6 +2,7 @@ const sendJSON = require('send-data/json');
 const Promise = require('bluebird');
 const Joi = require('joi');
 const Boom = require('boom');
+const partial = require('ap').partial;
 const MMR = require('../mmr');
 const AuthRequired = require('../auth');
 
@@ -53,7 +54,12 @@ function CompleteMatch (options) {
     match.endTime = body.endTime;
     match.gameLength = body.gameLength;
 
-    await Promise.all(body.players.map(incrementGameCount));
+    var connectedPlayers = {};
+
+    body.players.forEach(function (steamid) {
+      steamid = steamid + '';
+      connectedPlayers[steamid] = steamid;
+    });
 
     if (match.players.length === 10) {
       let mmrMatch = {
@@ -69,9 +75,11 @@ function CompleteMatch (options) {
       console.log(match);
 
       await Promise.all([
-        Promise.all(mmrMatch.dire.map(updateMMR)),
-        Promise.all(mmrMatch.radiant.map(updateMMR))
+        Promise.all(mmrMatch.dire.map(partial(updateMMR, connectedPlayers))),
+        Promise.all(mmrMatch.radiant.map(partial(updateMMR, connectedPlayers)))
       ]);
+    } else {
+      await Promise.all(body.players.map(incrementGameCount));
     }
 
     await options.models.matches.put(match);
@@ -85,13 +93,17 @@ function CompleteMatch (options) {
     });
   }
 
-  async function updateMMR (data) {
+  async function updateMMR (connectedPlayers, data) {
     var player = await options.models.users.getOrCreate(data.steamid);
     player.unrankedMMR = data.adjustedMMR;
 
-    await options.models.users.put(player);
+    options.models.mmr.updateMMR();
 
-    return options.models.mmr.updateMMR();
+    if (connectedPlayers[player.steamid]) {
+      player.matchesFinished = player.matchesFinished + 1;
+    }
+
+    return options.models.users.put(player);
   }
 
   async function getPlayerEntry (steamid) {

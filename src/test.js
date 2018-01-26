@@ -61,6 +61,8 @@ test('full server test', function (t) {
   var dataPath = path.join(__dirname, '../test/');
   var token = null;
 
+  console.log(ALL_PLAYERS_STR);
+
   t.test('before', function (t) {
     rimraf(dataPath, function () {
       server = Init({
@@ -159,7 +161,7 @@ test('full server test', function (t) {
         winner: 'dire',
         endTime: (new Date()).toString(),
         gameLength: 123,
-        players: ALL_PLAYERS_STR
+        players: [USER_STR_0]
       }, token);
 
       t.ok(data.ok, 'should work');
@@ -179,12 +181,14 @@ test('full server test', function (t) {
       t.fail('should be able to get user data');
     }
 
+    var user1MMR = 0;
     try {
       let data = await get('users/' + USER_1);
       console.log(data);
       t.equals(data.steamid, USER_STR_1, 'has steamid as string');
-      t.equals(data.matchesFinished, 1, 'finished matches goes up');
+      t.equals(data.matchesFinished, 0, 'disconnected players dont get matchesFinished');
       t.ok(data.unrankedMMR < 1000, 'MMR goes down when you win');
+      user1MMR = data.unrankedMMR;
     } catch (e) {
       console.log(e.error);
       t.fail('should be able to get user data');
@@ -215,9 +219,19 @@ test('full server test', function (t) {
       USER_STR_1,
       USER_STR_7,
       USER_STR_8,
-      USER_STR_9,
-      USER_STR_0
+      USER_STR_9
     ]);
+
+    try {
+      let data = await get('users/' + USER_1);
+      console.log(data);
+      t.equals(data.steamid, USER_STR_1, 'has steamid as string');
+      t.equals(data.matchesFinished, 1, 'increases matchesFinished');
+      t.equals(data.unrankedMMR, user1MMR, 'doesnt increase when you have less than 10 players');
+    } catch (e) {
+      console.log(e.error);
+      t.fail('should be able to get user data');
+    }
 
     try {
       let data = await get('top');
@@ -339,9 +353,10 @@ async function get (path, data) {
 
 async function runMatch (t, radiant, dire) {
   var token = null;
+  var allPlayers = [].concat(radiant).concat(dire);
   try {
     let data = await post('auth', {
-      users: ALL_PLAYERS,
+      users: allPlayers,
       gametime: (new Date()).toString() + Math.random()
     });
     t.ok(data.token, 'gets auth token');
@@ -374,7 +389,7 @@ async function runMatch (t, radiant, dire) {
       winner: 'dire',
       endTime: (new Date()).toString() + Math.random(),
       gameLength: 123,
-      players: ALL_PLAYERS_STR
+      players: allPlayers
     }, token);
 
     t.ok(data.ok, 'should work');

@@ -9,7 +9,14 @@ process.on('unhandledRejection', (err) => {
 
 var options = rc('oaaserver', {
   port: 6969,
-  root: path.join(__dirname, '../data/')
+  root: path.join(__dirname, '../data/'),
+
+  imba: {
+    host: 'hostname',
+    port: 0,
+    user: 'username',
+    password: 'password'
+  }
 });
 
 Init(options);

@@ -6,6 +6,7 @@ const sendBoom = require('send-boom');
 const fs = require('fs');
 
 const Models = require('./models');
+// const IMBA = require('./imba');
 
 module.exports = Init;
 
@@ -16,6 +17,7 @@ function Init (options) {
   }
 
   options.models = Models(options);
+  // options.imba = IMBA(options);
 
   var router = HttpHashRouter();
 
