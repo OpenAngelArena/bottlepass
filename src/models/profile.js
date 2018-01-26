@@ -82,8 +82,10 @@ async function checkRequestUsers (options, model) {
 }
 
 async function getUserProfiles (options, model) {
-  var idList = Object.keys(idQueue);
-  idQueue = {};
+  var idList = Object.keys(idQueue).splice(20);
+  idList.forEach(function (id) {
+    idQueue[id] = false;
+  });
   if (!idList.length) {
     return;
   }
@@ -112,6 +114,8 @@ async function getUserProfiles (options, model) {
 
     return model.put(result[player.steamid]);
   }));
+
+  await wait(1000);
 
   return result;
 }
