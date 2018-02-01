@@ -9,7 +9,9 @@ module.exports = Create;
 
 const AuthValidator = Joi.object().keys({
   users: Joi.array().items(Joi.number().min(1)).min(1).required(),
-  gametime: Joi.string().required()
+  gametime: Joi.string().required(),
+  toolsMode: Joi.boolean().required(),
+  cheatsMode: Joi.boolean().valid(false).required()
 });
 
 function Create (options) {

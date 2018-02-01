@@ -81,9 +81,22 @@ test('full server test', function (t) {
       t.equal(e.error.statusCode, 400, 'gets error when sending invalud auth');
     }
     try {
+      await post('auth', {
+        users: ALL_PLAYERS,
+        gametime: (new Date()).toString(),
+        toolsMode: false,
+        cheatsMode: true
+      });
+      t.fail('auth should fail while in cheats mode');
+    } catch (e) {
+      t.equal(e.error.statusCode, 400, 'gets error when sending cheats mode game');
+    }
+    try {
       let data = await post('auth', {
         users: ALL_PLAYERS,
-        gametime: (new Date()).toString()
+        gametime: (new Date()).toString(),
+        toolsMode: false,
+        cheatsMode: false
       });
       console.log(data);
       t.ok(data.token, 'gets auth token');
@@ -358,7 +371,9 @@ async function runMatch (t, radiant, dire) {
   try {
     let data = await post('auth', {
       users: allPlayers,
-      gametime: (new Date()).toString() + Math.random()
+      gametime: (new Date()).toString() + Math.random(),
+      toolsMode: false,
+      cheatsMode: false
     });
     t.ok(data.token, 'gets auth token');
     t.ok(data.match, 'gets match data');

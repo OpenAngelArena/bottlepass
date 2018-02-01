@@ -83,7 +83,7 @@ async function queueProfileRead (options, model, steamid) {
 async function checkRequestUsers (options, model) {
   if (!runningRequest) {
     runningRequest = getUserProfiles(options, model);
-    runningRequest.then(() => runningRequest = null);
+    runningRequest.then(() => { runningRequest = null; });
   }
   return runningRequest;
 }
