@@ -33,7 +33,7 @@ function CompleteMatch (options) {
 
   async function postControllerAsync (req, res, opts) {
     var body = await jsonBody(req, res);
-
+    console.log(body);
     body = CompleteMatchValidator.validate(body);
 
     if (body.error) {

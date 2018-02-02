@@ -27,6 +27,7 @@ function Create (options) {
   }
 
   async function postControllerAsync (req, res, opts) {
+    console.log(req.body);
     var body = await jsonBody(req, res);
     console.log(body);
     body = AuthValidator.validate(body);
