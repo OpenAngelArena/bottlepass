@@ -2,6 +2,7 @@ const sendJSON = require('send-data/json');
 const Jwt = require('jsonwebtoken');
 const Promise = require('bluebird');
 const Joi = require('joi');
+const Boom = require('boom');
 const sha = require('sha.js');
 
 const jsonBody = Promise.promisify(require('body/json'));
