@@ -33,7 +33,7 @@ function Init (options) {
   router.set('/top*', require('./endpoints/top')(options));
 
   var cors = Corsify({
-    'Access-Control-Allow-Headers': 'X-Auth-Token, Content-Type'
+    'Access-Control-Allow-Headers': 'X-Auth-Token, Content-Type, Auth-Checksum'
   });
 
   var server = http.createServer(cors(handler));

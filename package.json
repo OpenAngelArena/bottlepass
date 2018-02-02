@@ -32,6 +32,7 @@
     "rimraf": "^2.6.2",
     "send-boom": "^0.1.0",
     "send-data": "^8.0.0",
+    "sha.js": "^2.4.10",
     "sorted-array": "^2.0.2",
     "steam-id-convertor": "^1.0.1",
     "weakmap-shim": "^1.1.1",

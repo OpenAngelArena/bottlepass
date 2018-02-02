@@ -2,8 +2,10 @@ const sendJSON = require('send-data/json');
 const Jwt = require('jsonwebtoken');
 const Promise = require('bluebird');
 const Joi = require('joi');
+const sha = require('sha.js');
 
 const jsonBody = Promise.promisify(require('body/json'));
+const textBody = Promise.promisify(require("body"));
 
 module.exports = Create;
 
@@ -27,9 +29,13 @@ function Create (options) {
   }
 
   async function postControllerAsync (req, res, opts) {
-    console.log(req.body);
-    var body = await jsonBody(req, res);
+    var text = await textBody(req, res);
+    var body = JSON.parse(text);
     console.log(body);
+
+    if (req.headers['auth-checksum'] !== sha('sha256').update(text + options.authkey).digest('hex')) {
+      throw Boom.badRequest();
+    }
     body = AuthValidator.validate(body);
 
     if (body.error) {
