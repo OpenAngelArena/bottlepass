@@ -91,8 +91,8 @@ function TournamentSeeding (options) {
     try {
       var data = await options.models.users.rawGet(entry.steamid);
       var profile = await options.models.profile.get(entry.steamid);
-      data.name = entry.name;
-      data.discordName = profile.name;
+      data.discordName = entry.name;
+      data.name = profile.name;
       delete data.matches;
       delete data.unrankedMMR;
       delete data.customBottle;
