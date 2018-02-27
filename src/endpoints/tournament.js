@@ -94,7 +94,7 @@ function TournamentSeeding (options) {
       data.discordName = entry.name;
       data.name = profile.name;
       delete data.matches;
-      delete data.unrankedMMR;
+      delete data.rankedMMR;
       delete data.customBottle;
       delete data.currentMatch;
 
