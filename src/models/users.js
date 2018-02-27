@@ -38,6 +38,7 @@ function addUserProperty (model, name, prop) {
   var oldGetOrCreate = model.getOrCreate;
   var oldPut = model.put;
 
+  model.rawGet = oldGet;
   model.get = getter(oldGet);
   model.getOrCreate = getter(oldGetOrCreate);
 

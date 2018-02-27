@@ -25,7 +25,8 @@ function Models (options) {
   return {
     users: users,
     matches: matches,
-    mmr: mmr
+    mmr: mmr,
+    profile: profile
   };
 
   function createDB (name) {

@@ -60,3 +60,4 @@ typings/
 .oaaserverrc
 data/
 test/
+.DS_Store

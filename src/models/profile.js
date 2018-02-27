@@ -21,7 +21,6 @@ function Profile (options, db, users) {
   var model = CreateModel(ProfileValidator, 'steamid', db);
   users.addUserProperty('profile', model);
 
-  delete model.get;
   var oldGetOrCreate = model.getOrCreate;
 
   if (options.steamkey) {

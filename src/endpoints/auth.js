@@ -6,7 +6,7 @@ const Boom = require('boom');
 const sha = require('sha.js');
 
 const jsonBody = Promise.promisify(require('body/json'));
-const textBody = Promise.promisify(require("body"));
+const textBody = Promise.promisify(require('body'));
 
 module.exports = Create;
 
@@ -32,10 +32,10 @@ function Create (options) {
   async function postControllerAsync (req, res, opts) {
     var text = await textBody(req, res);
     var body = JSON.parse(text);
-    console.log(body);
+    console.log(text);
 
     if (req.headers['auth-checksum'] !== sha('sha256').update(text + options.authkey).digest('hex')) {
-      throw Boom.badRequest();
+      throw Boom.badRequest('Bad auth checksum');
     }
     body = AuthValidator.validate(body);
 

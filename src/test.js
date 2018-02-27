@@ -3,8 +3,14 @@ const path = require('path');
 const request = require('request-promise');
 const rimraf = require('rimraf');
 const Promise = require('bluebird');
+const sha = require('sha.js');
 
 const Init = require('./init');
+
+process.on('unhandledRejection', (err) => {
+  console.error(err);
+  process.exit(1);
+});
 
 const TEST_PORT = 12345;
 
@@ -56,6 +62,8 @@ const ALL_PLAYERS_STR = [
   USER_STR_0
 ];
 
+const AUTHKEY = 'asdfasfdasdf';
+
 test('full server test', function (t) {
   var server = null;
   var dataPath = path.join(__dirname, '../test/');
@@ -68,7 +76,8 @@ test('full server test', function (t) {
       server = Init({
         port: TEST_PORT,
         root: dataPath,
-        secret: 'testcase'
+        secret: 'testcase',
+        authkey: AUTHKEY
       });
       t.end();
     });
@@ -345,13 +354,16 @@ test('full server test', function (t) {
 });
 
 async function post (path, data, token) {
+  var text = JSON.stringify(data || {});
+
   return request({
     method: 'POST',
     uri: 'http://localhost:' + TEST_PORT + '/' + path,
     body: data || {},
     json: true,
     headers: {
-      'X-Auth-Token': token
+      'X-Auth-Token': token,
+      'auth-checksum': sha('sha256').update(text + AUTHKEY).digest('hex')
     }
   });
 }
