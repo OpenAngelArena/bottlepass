@@ -81,7 +81,7 @@ function TournamentSeeding (options) {
 
     var str = data.map(function (team) {
       return [team.team, team.preseed].join(',');
-    }).join('\n');
+    }).join('\t');
 
     return send(req, res, str);
   }
