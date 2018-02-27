@@ -80,8 +80,8 @@ function TournamentSeeding (options) {
     });
 
     var str = data.map(function (team) {
-      return [team.team, team.preseed].join(',');
-    }).join('\t');
+      return [team.team, team.preseed].join('\t');
+    }).join('\n');
 
     return send(req, res, str);
   }
