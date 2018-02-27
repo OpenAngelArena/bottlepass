@@ -1,5 +1,5 @@
 const Promise = require('bluebird');
-const sendJSON = require('send-data/json');
+const send = require('send-data');
 const Boom = require('boom');
 const path = require('path');
 const fs = Promise.promisifyAll(require('fs'));
@@ -79,11 +79,11 @@ function TournamentSeeding (options) {
       entry.preseed = i + 1;
     });
 
-    return sendJSON(req, res, {
-      body: data,
-      pretty: true,
-      statusCode: 200
-    });
+    var str = data.map(function (team) {
+      return [team.team, team.preseed].join(',');
+    }).join('\n');
+
+    return send(req, res, str);
   }
 
   async function safeGetUser (entry) {
