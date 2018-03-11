@@ -5,7 +5,7 @@ const SortedArray = require('sorted-array');
 
 module.exports = MMRRankings;
 
-const BRACKET_BUCKETS = 100;
+const BRACKET_BUCKETS = 5000;
 
 const MMRRankingsValidator = Joi.object().keys({
   // id as used in API's

@@ -6,6 +6,7 @@ const Users = require('./users');
 const Matches = require('./match');
 const MMRBracket = require('./brackets');
 const SteamProfile = require('./profile');
+const Seasons = require('./seasons');
 
 module.exports = Models;
 
@@ -21,12 +22,14 @@ function Models (options) {
   var matches = Matches(createDB('matches'));
   var profile = SteamProfile(options, createDB('steam_profiles'), users);
   var mmr = MMRBracket(createDB('mmr_bracket'), users, profile);
+  var seasons = Seasons(createDB('seasons'));
 
   return {
     users: users,
     matches: matches,
     mmr: mmr,
-    profile: profile
+    profile: profile,
+    seasons: seasons
   };
 
   function createDB (name) {

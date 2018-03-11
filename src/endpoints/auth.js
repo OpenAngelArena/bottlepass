@@ -5,7 +5,7 @@ const Joi = require('joi');
 const Boom = require('boom');
 const sha = require('sha.js');
 
-const jsonBody = Promise.promisify(require('body/json'));
+// const jsonBody = Promise.promisify(require('body/json'));
 const textBody = Promise.promisify(require('body'));
 
 module.exports = Create;

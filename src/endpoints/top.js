@@ -16,12 +16,15 @@ function TopPlayers (options) {
     if (!Number.isFinite(topGroup)) {
       topGroup = 0;
     }
+    var originalTopGroup = topGroup;
     topGroup = options.models.mmr.bracketForRanking(~~topGroup);
 
     var currentBucket = await options.models.mmr.getOrCreate('' + topGroup);
 
+    var start = originalTopGroup - (originalTopGroup % 100) - topGroup;
+
     sendJSON(req, res, {
-      body: currentBucket.players,
+      body: currentBucket.players.slice(start, start + 100),
       pretty: true,
       statusCode: 200
     });

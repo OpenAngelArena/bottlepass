@@ -37,7 +37,7 @@ function getElo (score0, score1) {
 }
 
 function calculateTeamScores (team, scoreChange, matchID) {
-  scoreChange = Math.round(scoreChange * (team.length));
+  scoreChange = Math.round(scoreChange * (Math.min(2, team.length)));
   // scoreChange = Math.round(scoreChange * 2);
   team.forEach(function (player) {
     var myElo = 1;

@@ -6,6 +6,7 @@ const sendBoom = require('send-boom');
 const fs = require('fs');
 
 const Models = require('./models');
+const SeasonWatcher = require('./season');
 // const IMBA = require('./imba');
 
 module.exports = Init;
@@ -18,6 +19,7 @@ function Init (options) {
 
   options.models = Models(options);
   // options.imba = IMBA(options);
+  options.season = SeasonWatcher(options);
 
   var router = HttpHashRouter();
 
@@ -29,6 +31,7 @@ function Init (options) {
   router.set('/match/complete', require('./endpoints/complete')(options));
   router.set('/match/send_teams', require('./endpoints/send_teams')(options));
   router.set('/auth', require('./endpoints/auth')(options));
+  router.set('/history', require('./endpoints/history')(options));
   router.set('/tournament', require('./endpoints/tournament')(options));
   router.set('/tournament.csv', require('./endpoints/tournament.csv')(options));
   router.set('/users/*', require('./endpoints/users')(options));

@@ -1,6 +1,5 @@
 const Promise = require('bluebird');
 const sendJSON = require('send-data/json');
-const Boom = require('boom');
 const path = require('path');
 const fs = Promise.promisifyAll(require('fs'));
 const csv = Promise.promisifyAll(require('csv'));
@@ -11,8 +10,8 @@ function TournamentSeeding (options) {
   var teams = {};
 
   fs.readFileAsync(path.join(__dirname, '../../teams.csv'), {
-      encoding: 'utf8'
-    })
+    encoding: 'utf8'
+  })
     .then(csv.parseAsync)
     .then(function (data) {
       data.forEach(function (team) {
@@ -35,7 +34,7 @@ function TournamentSeeding (options) {
             }
             isName = true;
           }
-        })
+        });
       });
     });
 

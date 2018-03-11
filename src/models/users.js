@@ -22,7 +22,10 @@ const UserValidator = Joi.object().keys({
   // string filename of the custom bottle
   customBottle: Joi.string().empty('').default(''),
 
-  matches: Joi.array().items(Joi.string()).default([])
+  matches: Joi.array().items(Joi.string()).default([]),
+
+  bestRanking: Joi.number(),
+  seasonPlacings: Joi.number().default(0)
 });
 
 function User (db) {

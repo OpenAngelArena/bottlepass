@@ -40,7 +40,7 @@ function Profile (options, db, users) {
     });
     if (!data.name) {
       data = await queueProfileRead(options, model, id);
-    } else if (requeue && Date.now() - data.lastUpdated > 60000) {
+    } else if (requeue && Date.now() - data.lastUpdated > 1000 * 60 * 60 * 24) {
       queueProfileRead(options, model, id);
     }
 
