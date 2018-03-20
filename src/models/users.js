@@ -25,7 +25,13 @@ const UserValidator = Joi.object().keys({
   matches: Joi.array().items(Joi.string()).default([]),
 
   bestRanking: Joi.number(),
-  seasonPlacings: Joi.number().default(0)
+  seasonPlacings: Joi.number().default(0),
+
+  bottlepassXP: Joi.number().default(0),
+  bottlepassLevel: Joi.number().default(0),
+
+  lastGameOfTheDay: Joi.number().default(0),
+  lastWinOfTheDay: Joi.number().default(0)
 });
 
 function User (db) {
@@ -64,4 +70,19 @@ function addUserProperty (model, name, prop) {
     delete data[name];
     return oldPut(data);
   }
+}
+
+/*
+
+1 xp for every 2 minutes the game lasts. If the game lasts at least 25 minutes then there is a “Full Game Bonus” which is random between 20-30.
+100 xp/level
+50% xp bonus for hosting a lobby
++5 First game of the day bonus
++5 first win of the day bonus
+100% Bonus XP to everybody in the lobby if someone in the lobby is playing one of their first 3 games
+
+*/
+
+function levelForExperience (xp) {
+  return ~~(xp / 100);
 }

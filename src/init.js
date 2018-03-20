@@ -1,4 +1,5 @@
 const http = require('http');
+const https = require('https');
 const HttpHashRouter = require('http-hash-router');
 const Boom = require('boom');
 const Corsify = require('corsify');
@@ -42,7 +43,17 @@ function Init (options) {
   });
 
   var server = http.createServer(cors(handler));
+  console.log('Listening on port', options.port);
   server.listen(options.port);
+
+  if (options.ssl_port) {
+    let servers = https.createServer({
+      key: '../privkey.pem',
+      cert: '../cert.pem'
+    });
+    console.log('Listening on port', options.ssl_port);
+    server.listen(options.ssl_port);
+  }
 
   return server;
 

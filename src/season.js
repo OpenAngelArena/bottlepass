@@ -41,7 +41,7 @@ async function precallibrate (state, options) {
     return options.models.users.put(user);
   }));
   var allPlayers = await getAllSortedPlayers(options);
-  var allSteamids = allPlayers.map((p)=> p.steamid);
+  var allSteamids = allPlayers.map((p) => p.steamid);
   var newMMRs = normalDistribute(allSteamids, 700, 1300);
 
   // this part can probably take a while
@@ -54,8 +54,6 @@ async function precallibrate (state, options) {
   state.seasonState = 'running';
   await options.models.seasons.setState(state);
   await options.models.mmr.updateMMR();
-
-  console.log(state);
 }
 
 async function getAllSortedPlayers (options) {

@@ -12,13 +12,7 @@ const SeasonStateValidator = Joi.object().keys({
   // id as used in API's
   id: Joi.string().required().allow(STATE_ID),
   currentSeason: Joi.number().default(1),
-  nextSeason: Joi.number().default(function () {
-    var d = new Date();
-    d.setHours(0, 0, 0, 0);
-    d.setDate(1);
-
-    return d - 0;
-  }, 'start of the month'),
+  nextSeason: Joi.number().default(0),
   nextStep: Joi.number(),
 
   seasonState: Joi.string().default('running').allow([
@@ -78,7 +72,6 @@ async function startSeason (model) {
   state.currentSeason++;
   state.seasonState = 'precallibration';
   state.nextStep = state.nextSeason;
-
 
   var d = new Date();
   d.setHours(0, 0, 0, 0);

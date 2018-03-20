@@ -22,11 +22,11 @@ test('seasons model', function (t) {
     var state = await season.getState();
     t.ok(state, 'can get state');
     t.ok(state.currentSeason > 0, 'has a current season');
-    t.equal(state.seasonState, 'running', 'can save current season');
+    t.equal(state.seasonState, 'precallibration', 'can save current season');
 
-    await season.setState({
-      currentSeason: 2
-    });
+    state.currentSeason = 2;
+
+    await season.setState(state);
     state = await season.getState();
     t.equal(state.currentSeason, 2, 'can save current season');
     await season.setState({ currentSeason: 1 })

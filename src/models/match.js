@@ -16,6 +16,10 @@ const MatchValidator = Joi.object().keys({
   outcome: Joi.string().optional(),
 
   players: PlayerList,
+  hostId: Joi.string(),
+
+  isNewPlayerGame: Joi.boolean().default(false),
+  isRankedGame: Joi.boolean().default(true),
 
   teams: Joi.object().keys({
     dire: PlayerList,
