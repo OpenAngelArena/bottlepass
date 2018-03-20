@@ -51,9 +51,9 @@ function Init (options) {
     let servers = https.createServer({
       key: fs.readFileSync(path.join(__dirname, '../privkey.pem')),
       cert: fs.readFileSync(path.join(__dirname, '../cert.pem'))
-    });
+    }, cors(handler));
     console.log('Listening on port', options.ssl_port);
-    server.listen(options.ssl_port);
+    servers.listen(options.ssl_port);
   }
 
   return server;
