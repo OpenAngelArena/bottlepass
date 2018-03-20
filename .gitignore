@@ -61,3 +61,6 @@ typings/
 data/
 test/
 .DS_Store
+cert.pem
+privkey.pem
+data.bak

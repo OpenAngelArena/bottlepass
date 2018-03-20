@@ -5,6 +5,7 @@ const Boom = require('boom');
 const Corsify = require('corsify');
 const sendBoom = require('send-boom');
 const fs = require('fs');
+const path = require('path');
 
 const Models = require('./models');
 const SeasonWatcher = require('./season');
@@ -48,8 +49,8 @@ function Init (options) {
 
   if (options.ssl_port) {
     let servers = https.createServer({
-      key: '../privkey.pem',
-      cert: '../cert.pem'
+      key: fs.readFileSync(path.join(__dirname, '../privkey.pem')),
+      cert: fs.readFileSync(path.join(__dirname, '../cert.pem'))
     });
     console.log('Listening on port', options.ssl_port);
     server.listen(options.ssl_port);
