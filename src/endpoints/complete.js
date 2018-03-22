@@ -62,7 +62,7 @@ function CompleteMatch (options) {
     });
     var playerDiffs = [];
 
-    if (true || match.players.length === 10) {
+    if (match.players.length === 10) {
       if (match.isRankedGame) {
         let mmrMatch = {
           radiant: await Promise.all(match.teams.radiant.map(getPlayerEntry)),
