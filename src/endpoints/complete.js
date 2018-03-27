@@ -126,7 +126,9 @@ function CompleteMatch (options) {
   }
 
   async function endFullUnrankedGame (connectedPlayers, match, playerData) {
-    var player = await options.models.users.getOrCreate(playerData.steamid);
+    var player = await options.models.users.getOrCreate({
+      steamid: playerData.steamid
+    });
     var winningTeam = match.outcome === 'radiant' ? match.teams.radiant : match.teams.dire;
     var didWin = winningTeam.indexOf(player.steamid) !== -1;
     var bottleDiff = updateBottlepass(player, match, didWin);
