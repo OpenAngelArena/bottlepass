@@ -80,6 +80,8 @@ function CompleteMatch (options) {
           Promise.all(mmrMatch.dire.map(partial(endRankedGame, connectedPlayers, match, (body.winner === 'dire')))),
           Promise.all(mmrMatch.radiant.map(partial(endRankedGame, connectedPlayers, match, (body.winner === 'radiant'))))
         ]);
+        playerDiffs = playerDiffs[0].concat(playerDiffs[1]);
+
         options.models.mmr.updateMMR();
       } else {
         playerDiffs = await Promise.all(body.players.map(endFullUnrankedGame));
@@ -108,7 +110,8 @@ function CompleteMatch (options) {
     }
     var playerDiff = {
       steamid: player.steamid,
-      mmr: mmrData.adjustedMMR - player.unrankedMMR
+      mmrDiff: mmrData.adjustedMMR - player.unrankedMMR,
+      mmr: mmrData.adjustedMMR
     };
 
     player.unrankedMMR = mmrData.adjustedMMR;
@@ -134,6 +137,8 @@ function CompleteMatch (options) {
 
     return {
       steamid: player.steamid,
+      mmrDiff: 0,
+      mmr: player.unrankedMMR,
       bottlepass: bottleDiff
     };
   }
