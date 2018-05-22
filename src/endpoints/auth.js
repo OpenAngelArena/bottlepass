@@ -66,8 +66,7 @@ function Create (options) {
     users.forEach(function (user) {
       if (user.matchesStarted > 3) {
         isNewPlayerGame = false;
-      }
-      if (user.matchesFinished < 5) {
+      } else {
         isRankedGame = false;
       }
       userData[user.steamid] = {
