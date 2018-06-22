@@ -63,7 +63,7 @@ function CompleteMatch (options) {
     var playerDiffs = [];
 
     if (match.players.length === 10) {
-      if (match.isRankedGame) {
+      if (match.isRankedGame && match.gameLength > 600) {
         let mmrMatch = {
           radiant: await Promise.all(match.teams.radiant.map(getPlayerEntry)),
           dire: await Promise.all(match.teams.dire.map(getPlayerEntry))
