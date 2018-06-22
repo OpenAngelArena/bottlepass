@@ -27,6 +27,6 @@ These are the current K-values, per MMR bracket (do note these are subject to ch
 | between 1000 and 2000 | linear 40 to 20 |
 | 2000 or above | 20 |
 
-The ELO function is `1 / (1 + Math.pow(10, (score1 - score0) / 400))`
-In LaTeX: `10^{-\frac{\mathrm{YourScore}-\mathrm{TheirScore}}{400}}`
-Scores are multiplied by 2 to make up for the additional pass through the ELO function
+The ELO function is `1 / (1 + Math.pow(10, (score1 - score0) / 400))`  
+In LaTeX: `10^{-\frac{\mathrm{YourScore}-\mathrm{TheirScore}}{400}}`  
+Scores are multiplied by 2 to make up for the additional pass through the ELO function  
