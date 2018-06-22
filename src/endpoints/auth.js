@@ -67,7 +67,7 @@ function Create (options) {
       if (user.matchesStarted > 3) {
         isNewPlayerGame = false;
       } else {
-        isRankedGame = false;
+        // isRankedGame = false;
       }
       userData[user.steamid] = {
         mmr: user.rankedMMR,

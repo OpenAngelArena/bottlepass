@@ -53,6 +53,7 @@ function CompleteMatch (options) {
     match.outcome = body.winner;
     match.endTime = body.endTime;
     match.gameLength = body.gameLength;
+    match.hostId = match.hostId + '';
 
     var connectedPlayers = {};
 
@@ -104,12 +105,12 @@ function CompleteMatch (options) {
   }
 
   async function endRankedGame (connectedPlayers, match, didWin, mmrData) {
-    var player = await options.models.users.getOrCreate(mmrData.steamid);
+    var player = await options.models.users.getOrCreate(mmrData.steamid + '');
     if (!Number.isFinite(mmrData.adjustedMMR)) {
       mmrData.adjustedMMR = player.unrankedMMR;
     }
     var playerDiff = {
-      steamid: player.steamid,
+      steamid: player.steamid + '',
       mmrDiff: mmrData.adjustedMMR - player.unrankedMMR,
       mmr: mmrData.adjustedMMR
     };
@@ -126,9 +127,7 @@ function CompleteMatch (options) {
   }
 
   async function endFullUnrankedGame (connectedPlayers, match, playerData) {
-    var player = await options.models.users.getOrCreate({
-      steamid: playerData.steamid
-    });
+    var player = await options.models.users.getOrCreate(playerData.steamid + '');
     var winningTeam = match.outcome === 'radiant' ? match.teams.radiant : match.teams.dire;
     var didWin = winningTeam.indexOf(player.steamid) !== -1;
     var bottleDiff = updateBottlepass(player, match, didWin);
@@ -146,6 +145,7 @@ function CompleteMatch (options) {
   }
 
   async function getPlayerEntry (steamid) {
+    steamid = steamid + '';
     var player = await options.models.users.getOrCreate(steamid);
 
     return {
@@ -155,6 +155,7 @@ function CompleteMatch (options) {
   }
 
   async function endUnrankedGame (steamid) {
+    steamid = steamid + '';
     var player = await options.models.users.getOrCreate(steamid);
 
     player.matchesFinished = player.matchesFinished + 1;
