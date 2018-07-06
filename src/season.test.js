@@ -8,5 +8,6 @@ test('season methods', function (t) {
     playerList.push(names());
   }
   var result = Season.normalDistribute(playerList, 800, 1300);
+  t.ok(result);
   t.end();
 });

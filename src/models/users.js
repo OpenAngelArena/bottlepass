@@ -83,6 +83,6 @@ function addUserProperty (model, name, prop) {
 
 */
 
-function levelForExperience (xp) {
-  return ~~(xp / 100);
-}
+// function levelForExperience (xp) {
+//   return ~~(xp / 100);
+// }

@@ -26,7 +26,7 @@ async function precallibrate (state, options) {
   var topPlayers = await options.models.mmr.getOrCreate('0');
   topPlayers = topPlayers.players.slice(0, 100);
 
-  var data = await options.models.seasons.topPlayers.put({
+  await options.models.seasons.topPlayers.put({
     season: state.currentSeason - 1,
     players: topPlayers
   });
