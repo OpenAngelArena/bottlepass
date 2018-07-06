@@ -1,11 +1,12 @@
-const sendJSON = require('send-data/json');
 const Promise = require('bluebird');
 const Joi = require('joi');
+const sendJSON = require('send-data/json');
+const Boom = require('boom');
 const AuthRequired = require('../auth');
 
 const jsonBody = Promise.promisify(require('body/json'));
 
-module.exports = SaveState;
+module.exports = LoadState;
 
 const PlayerList = Joi.array().items(Joi.object().keys({
   steamid: Joi.string(),
@@ -15,11 +16,10 @@ const BodyValidator = Joi.object().keys({
   players: Joi.object().keys({
     dire: PlayerList,
     radiant: PlayerList
-  }),
-  state: Joi.object()
+  })
 });
 
-function SaveState (options) {
+function LoadState (options) {
   return {
     // GET: getController,
     POST: AuthRequired(options, postController)
@@ -33,32 +33,28 @@ function SaveState (options) {
   async function postControllerAsync (req, res, opts) {
     var body = await jsonBody(req, res);
 
-    body = BodyValidator.validate(body);
     console.log(body);
+    body = BodyValidator.validate(body);
 
     if (body.error) {
       throw body.error;
     }
     body = body.value;
 
-    console.log(req.matchid);
-
-    var match = await options.models.matches.get(req.matchid);
-    // do stuff with match? i dunnno....
     var stateId = options.models.matchstate.stateID(body.players);
 
-    if (match.stateId !== stateId) {
-      match.stateId = stateId;
-      options.models.matches.put(match);
+    try {
+      var matchState = await options.models.matchstate.get(stateId);
+      console.log(matchState.state);
+      console.log(JSON.stringify(matchState.state, null, 2));
+
+      return sendJSON(req, res, matchState);
+    } catch (err) {
+      console.log(err.notFound, err);
+      if (err.notFound) {
+        throw Boom.notFound('No saved state was found with those players', err);
+      }
+      throw err;
     }
-
-    await options.models.matchstate.put({
-      id: stateId,
-      state: body.state
-    });
-
-    sendJSON(req, res, {
-      ok: true
-    });
   }
 }

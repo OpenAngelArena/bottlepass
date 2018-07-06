@@ -29,6 +29,8 @@ function Init (options) {
     res.end('OK');
   });
 
+  router.set('/state/save', require('./endpoints/savestate')(options));
+  router.set('/state/load', require('./endpoints/loadstate')(options));
   router.set('/match/calculate', require('./endpoints/calculate')(options));
   router.set('/match/complete', require('./endpoints/complete')(options));
   router.set('/match/send_teams', require('./endpoints/send_teams')(options));

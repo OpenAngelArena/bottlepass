@@ -15,6 +15,7 @@ const MatchValidator = Joi.object().keys({
 
   outcome: Joi.string().optional(),
 
+  stateId: Joi.string().optional().allow(''),
   players: PlayerList,
   hostId: Joi.string(),
 

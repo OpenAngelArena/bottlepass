@@ -40,14 +40,14 @@ function Create (options) {
     }
     body = AuthValidator.validate(body);
 
-    if (body.cheatsMode && !body.toolsMode) {
-      throw Boom.badRequest('Cannot use Bottlepass in cheats mode');
-    }
-
     if (body.error) {
       throw body.error;
     }
     body = body.value;
+
+    if (body.cheatsMode && !body.toolsMode) {
+      throw Boom.badRequest('Cannot use Bottlepass in cheats mode');
+    }
 
     body.users = body.users.map((val) => val + '');
     var users = await Promise.all(body.users.map(async (steamid) => {
