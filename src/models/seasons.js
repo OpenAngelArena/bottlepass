@@ -49,7 +49,8 @@ async function getState (model) {
   mostRecentSeason = Math.max(data.currentSeason, mostRecentSeason);
 
   if (Date.now() > data.nextSeason) {
-    return startSeason(model);
+    // don't start new seasons unless I say so.
+    // return startSeason(model);
   }
 
   return data;
