@@ -53,8 +53,10 @@ function TournamentSeeding (options) {
         return safeGetUser(entry);
       }));
       thisTeam = {
+	team: teamName,
+	averageMMR: 0,
+	preseed: 0,
         players: thisTeam,
-        team: teamName
       };
       thisTeam.averageMMR = thisTeam.players.reduce(function (memo, player) {
         return memo + player.unrankedMMR;
