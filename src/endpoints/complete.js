@@ -63,7 +63,12 @@ function CompleteMatch (options) {
     });
     var playerDiffs = [];
 
-    if (match.players.length === 10) {
+    if (body.players.length < 4) {
+      console.log(body.players);
+      console.log('----- This otherwise normal game had no MMR because of you', body.players.length);
+    }
+
+    if (match.players.length === 10 && body.players.length >= 4) {
       if (match.isRankedGame && match.gameLength > 600) {
         let mmrMatch = {
           radiant: await Promise.all(match.teams.radiant.map(getPlayerEntry)),

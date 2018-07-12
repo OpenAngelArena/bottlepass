@@ -6,6 +6,18 @@ API server for OAA, calculating MMR and giving people fake internet points.
 
 Copy `.oaaserverrc.example` to `.oaaserverrc` and edit the values to be correct. To test locally against OAA running in tools mode, simply edit the URL override at the top of [bottlepass/server.lua](https://github.com/OpenAngelArena/oaa/blob/master/game/scripts/vscripts/components/bottlepass/server.lua#L12) to point to the IP address where your test Bottlepass server is running.
 
+# Bottlepass Levels
+Bottlepass is designed to reward simply playing the game. You only get Bottlepass experience if you finish the game, and it's designed to not heavily favor winning teams. It's supposed to take months of dedicated play to reach max level.
+
+It takes 100 xp to level up your Bottlepass, and the level cap is 100 with an option to prestige and reset to 0. At the end of each game with 10 players, each connected player receives:
+
+ * 1 xp for every 2 minutes the game lasts.
+ * If the game lasts at least 25 minutes then there is a “Full Game Bonus” which is random between 20-30.
+ * 50% xp bonus for hosting a lobby
+ * +5 First game of the day bonus
+ * +5 first win of the day bonus
+ * 100% Bonus XP to everybody in the lobby if someone in the lobby is playing one of their first 3 games
+
 # MMR System
 MMR is hard. No system is perfect, and no system truly works well without matchmaking. This is our system that we built anyway.
 

@@ -7,7 +7,6 @@ module.exports = Seasons;
 const STATE_ID = 'state';
 var mostRecentSeason = 0;
 
-const PlayerList = Joi.array().items(Joi.string()).default([]);
 const SeasonStateValidator = Joi.object().keys({
   // id as used in API's
   id: Joi.string().required().allow(STATE_ID),
@@ -50,7 +49,8 @@ async function getState (model) {
   mostRecentSeason = Math.max(data.currentSeason, mostRecentSeason);
 
   if (Date.now() > data.nextSeason) {
-    return startSeason(model);
+    // don't start new seasons unless I say so.
+    // return startSeason(model);
   }
 
   return data;
