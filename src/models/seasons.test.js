@@ -5,6 +5,9 @@ const path = require('path');
 const Level = require('level');
 
 const DB_DIR = path.join(__dirname, '../../test/sessions');
+var options = {
+  startSeason: true
+};
 
 test('seasons model', function (t) {
   var db = null;
@@ -15,7 +18,7 @@ test('seasons model', function (t) {
     });
   });
   t.test('basic model', async function (t) {
-    const season = Seasons(db);
+    const season = Seasons(options, db);
 
     t.ok(season, 'can create model');
 

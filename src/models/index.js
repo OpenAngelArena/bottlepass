@@ -23,7 +23,7 @@ function Models (options) {
   var matches = Matches(createDB('matches'));
   var profile = SteamProfile(options, createDB('steam_profiles'), users);
   var mmr = MMRBracket(createDB('mmr_bracket'), users, profile);
-  var seasons = Seasons(createDB('seasons'));
+  var seasons = Seasons(options, createDB('seasons'));
   var matchstate = MatchState(createDB('matchstate'));
 
   return {

@@ -93,7 +93,7 @@ function CompleteMatch (options) {
 
         options.models.mmr.updateMMR();
       } else {
-        playerDiffs = await Promise.all(body.players.map(partial(endFullUnrankedGame, match, abandonedPlayers));
+        playerDiffs = await Promise.all(body.players.map(partial(endFullUnrankedGame, match, abandonedPlayers)));
       }
     } else {
       await Promise.all(body.players.map(endUnrankedGame));
@@ -112,7 +112,7 @@ function CompleteMatch (options) {
     });
   }
 
-  async function endRankedGame (connectedPlayers, match, didWin, mmrData) {
+  async function endRankedGame (connectedPlayers, abandonedPlayers, match, didWin, mmrData) {
     var player = await options.models.users.getOrCreate(mmrData.steamid + '');
     if (!Number.isFinite(mmrData.adjustedMMR)) {
       mmrData.adjustedMMR = player.unrankedMMR;
