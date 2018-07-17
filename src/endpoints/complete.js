@@ -93,7 +93,7 @@ function CompleteMatch (options) {
 
         options.models.mmr.updateMMR();
       } else {
-        playerDiffs = await Promise.all(body.players.map(endFullUnrankedGame));
+        playerDiffs = await Promise.all(body.players.map(partial(endFullUnrankedGame, match, abandonedPlayers));
       }
     } else {
       await Promise.all(body.players.map(endUnrankedGame));
@@ -142,13 +142,18 @@ function CompleteMatch (options) {
     return playerDiff;
   }
 
-  async function endFullUnrankedGame (connectedPlayers, match, playerData) {
-    var player = await options.models.users.getOrCreate(playerData.steamid + '');
+  async function endFullUnrankedGame (match, abandonedPlayers, steamid) {
+    var player = await options.models.users.getOrCreate(steamid + '');
     var winningTeam = match.outcome === 'radiant' ? match.teams.radiant : match.teams.dire;
     var didWin = winningTeam.indexOf(player.steamid) !== -1;
-    var bottleDiff = updateBottlepass(player, match, didWin);
+    var bottleDiff = 0;
 
     player.matchesFinished = player.matchesFinished + 1;
+    if (player.abandonPenalty > 0) {
+      player.abandonPenalty -= 1;
+    } else {
+      bottleDiff = updateBottlepass(player, match, didWin);
+    }
 
     await options.models.users.put(player);
 
