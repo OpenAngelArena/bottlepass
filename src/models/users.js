@@ -11,6 +11,7 @@ const UserValidator = Joi.object().keys({
 
   matchesStarted: Joi.number().default(0),
   matchesFinished: Joi.number().default(0),
+  matchesAbandoned: Joi.number().default(0),
 
   // match ID they're currently supposedly in
   currentMatch: Joi.string().empty('').default(''),
@@ -31,7 +32,9 @@ const UserValidator = Joi.object().keys({
   bottlepassLevel: Joi.number().default(0),
 
   lastGameOfTheDay: Joi.number().default(0),
-  lastWinOfTheDay: Joi.number().default(0)
+  lastWinOfTheDay: Joi.number().default(0),
+
+  abandonPenalty: Joi.number().default(0)
 });
 
 function User (db) {
