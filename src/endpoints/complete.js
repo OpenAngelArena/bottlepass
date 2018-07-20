@@ -13,7 +13,7 @@ const CompleteMatchValidator = Joi.object().keys({
   endTime: Joi.string().required(),
   gameLength: Joi.number().min(1).required(),
   players: Joi.array().items(Joi.string()).required(),
-  abandons: Joi.array().items(Joi.string()).required(),
+  abandoned: Joi.array().items(Joi.string()).required(),
   isValid: Joi.boolean()
 });
 
@@ -65,7 +65,7 @@ function CompleteMatch (options) {
     });
     var abandonedPlayers = {};
 
-    body.abandons.forEach(function (steamid) {
+    body.abandoned.forEach(function (steamid) {
       steamid = steamid + '';
       abandonedPlayers[steamid] = steamid;
     });
