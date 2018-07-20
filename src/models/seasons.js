@@ -32,25 +32,27 @@ const SeasonScoreboard = Joi.object().keys({
   })).default([])
 });
 
-function Seasons (db) {
+function Seasons (options, db) {
   var stateModel = CreateModel(SeasonStateValidator, 'id', db);
   var topScoresModel = CreateModel(SeasonScoreboard, 'season', db);
 
   return {
-    getState: partial(getState, stateModel),
+    getState: partial(getState, stateModel, options),
     setState: partial(setState, stateModel),
     topPlayers: topScoresModel
   };
 }
 
-async function getState (model) {
+async function getState (model, options) {
   var data = await model.getOrCreate(STATE_ID);
 
   mostRecentSeason = Math.max(data.currentSeason, mostRecentSeason);
 
   if (Date.now() > data.nextSeason) {
     // don't start new seasons unless I say so.
-    // return startSeason(model);
+    if (options.startSeason) {
+      return startSeason(model);
+    }
   }
 
   return data;

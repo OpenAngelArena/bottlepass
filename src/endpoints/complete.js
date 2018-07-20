@@ -12,7 +12,9 @@ const CompleteMatchValidator = Joi.object().keys({
   winner: Joi.string().only('dire', 'radiant'),
   endTime: Joi.string().required(),
   gameLength: Joi.number().min(1).required(),
-  players: Joi.array().items(Joi.string()).required()
+  players: Joi.array().items(Joi.string()).required(),
+  abandons: Joi.array().items(Joi.string()).required(),
+  isValid: Joi.boolean()
 });
 
 module.exports = CompleteMatch;
@@ -61,15 +63,16 @@ function CompleteMatch (options) {
       steamid = steamid + '';
       connectedPlayers[steamid] = steamid;
     });
+    var abandonedPlayers = {};
+
+    body.abandons.forEach(function (steamid) {
+      steamid = steamid + '';
+      abandonedPlayers[steamid] = steamid;
+    });
     var playerDiffs = [];
 
-    if (body.players.length < 4) {
-      console.log(body.players);
-      console.log('----- This otherwise normal game had no MMR because of you', body.players.length);
-    }
-
     if (match.players.length === 10 && body.players.length >= 4) {
-      if (match.isRankedGame && match.gameLength > 600) {
+      if (match.isRankedGame && match.gameLength > 600 && body.isValid) {
         let mmrMatch = {
           radiant: await Promise.all(match.teams.radiant.map(getPlayerEntry)),
           dire: await Promise.all(match.teams.dire.map(getPlayerEntry))
@@ -83,14 +86,14 @@ function CompleteMatch (options) {
         console.log(match);
 
         playerDiffs = await Promise.all([
-          Promise.all(mmrMatch.dire.map(partial(endRankedGame, connectedPlayers, match, (body.winner === 'dire')))),
-          Promise.all(mmrMatch.radiant.map(partial(endRankedGame, connectedPlayers, match, (body.winner === 'radiant'))))
+          Promise.all(mmrMatch.dire.map(partial(endRankedGame, connectedPlayers, abandonedPlayers, match, (body.winner === 'dire')))),
+          Promise.all(mmrMatch.radiant.map(partial(endRankedGame, connectedPlayers, abandonedPlayers, match, (body.winner === 'radiant'))))
         ]);
         playerDiffs = playerDiffs[0].concat(playerDiffs[1]);
 
         options.models.mmr.updateMMR();
       } else {
-        playerDiffs = await Promise.all(body.players.map(endFullUnrankedGame));
+        playerDiffs = await Promise.all(body.players.map(partial(endFullUnrankedGame, match, abandonedPlayers)));
       }
     } else {
       await Promise.all(body.players.map(endUnrankedGame));
@@ -109,7 +112,7 @@ function CompleteMatch (options) {
     });
   }
 
-  async function endRankedGame (connectedPlayers, match, didWin, mmrData) {
+  async function endRankedGame (connectedPlayers, abandonedPlayers, match, didWin, mmrData) {
     var player = await options.models.users.getOrCreate(mmrData.steamid + '');
     if (!Number.isFinite(mmrData.adjustedMMR)) {
       mmrData.adjustedMMR = player.unrankedMMR;
@@ -124,20 +127,33 @@ function CompleteMatch (options) {
 
     if (connectedPlayers[player.steamid]) {
       player.matchesFinished = player.matchesFinished + 1;
-      playerDiff.bottlepass = updateBottlepass(player, match, didWin);
+      if (player.abandonPenalty > 0) {
+        player.abandonPenalty -= 1;
+      } else {
+        playerDiff.bottlepass = updateBottlepass(player, match, didWin);
+      }
+    }
+    if (abandonedPlayers[player.steamid]) {
+      player.matchesAbandoned += 1;
+      player.abandonPenalty += 2;
     }
 
     await options.models.users.put(player);
     return playerDiff;
   }
 
-  async function endFullUnrankedGame (connectedPlayers, match, playerData) {
-    var player = await options.models.users.getOrCreate(playerData.steamid + '');
+  async function endFullUnrankedGame (match, abandonedPlayers, steamid) {
+    var player = await options.models.users.getOrCreate(steamid + '');
     var winningTeam = match.outcome === 'radiant' ? match.teams.radiant : match.teams.dire;
     var didWin = winningTeam.indexOf(player.steamid) !== -1;
-    var bottleDiff = updateBottlepass(player, match, didWin);
+    var bottleDiff = 0;
 
     player.matchesFinished = player.matchesFinished + 1;
+    if (player.abandonPenalty > 0) {
+      player.abandonPenalty -= 1;
+    } else {
+      bottleDiff = updateBottlepass(player, match, didWin);
+    }
 
     await options.models.users.put(player);
 
