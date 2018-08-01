@@ -16,7 +16,9 @@ const AuthValidator = Joi.object().keys({
   toolsMode: Joi.boolean().required(),
   cheatsMode: Joi.boolean().required(),
   hostId: Joi.number(),
-  authKey: Joi.string()
+  authKey: Joi.string(),
+  isCM: Joi.boolean().required(),
+  isRanked: Joi.boolean().required()
 });
 
 function Create (options) {
@@ -61,7 +63,7 @@ function Create (options) {
 
     var userData = {};
     var isNewPlayerGame = true;
-    var isRankedGame = true;
+    var isRankedGame = users.length === 10 && (body.isRanked || body.isCM);
 
     users.forEach(function (user) {
       if (user.matchesStarted > 3) {
@@ -81,7 +83,8 @@ function Create (options) {
       players: body.users,
       hostId: body.hostId + '',
       isNewPlayerGame: isNewPlayerGame,
-      isRankedGame: isRankedGame
+      isRankedGame: isRankedGame,
+      isCaptainsMode: body.isCM
     });
 
     var token = await Jwt.sign({

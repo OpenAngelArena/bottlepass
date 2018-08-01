@@ -21,6 +21,7 @@ const MatchValidator = Joi.object().keys({
 
   isNewPlayerGame: Joi.boolean().default(false),
   isRankedGame: Joi.boolean().default(true),
+  isCaptainsMode: Joi.boolean().default(false),
 
   teams: Joi.object().keys({
     dire: PlayerList,
