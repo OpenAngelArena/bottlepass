@@ -34,14 +34,11 @@ function SaveState (options) {
     var body = await jsonBody(req, res);
 
     body = BodyValidator.validate(body);
-    console.log(body);
 
     if (body.error) {
       throw body.error;
     }
     body = body.value;
-
-    console.log(req.matchid);
 
     var match = await options.models.matches.get(req.matchid);
     // do stuff with match? i dunnno....

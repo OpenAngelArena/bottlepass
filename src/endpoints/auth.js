@@ -92,6 +92,13 @@ function Create (options) {
       matchid: matchid
     }, options.secret);
 
+    console.log({
+	          matchid: matchid,
+	          userData: userData,
+	          match: match,
+	          token: token
+	        });
+
     sendJSON(req, res, {
       matchid: matchid,
       userData: userData,
