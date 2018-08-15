@@ -25,6 +25,10 @@ const UserValidator = Joi.object().keys({
 
   matches: Joi.array().items(Joi.string()).default([]),
 
+  daysPlayed: Joi.number().default(0),
+  daysPlayedThisMonth: Joi.number().default(0),
+  lastMonthPlayed: Joi.number().default(0),
+
   bestRanking: Joi.number(),
   seasonPlacings: Joi.number().default(0),
 
