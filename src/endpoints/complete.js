@@ -228,11 +228,11 @@ function CompleteMatch (options) {
       let month = (new Date()).getMonth();
 
       if (month !== player.lastMonthPlayed) {
-        player.lastMonthPlayed = (new Date()).getMonth();
+        player.lastMonthPlayed = month;
+        player.averageMonthlyDays = ((player.averageMonthlyDays * 5) + player.daysPlayedThisMonth) / 6;
         player.daysPlayedThisMonth = 0;
       }
       player.daysPlayedThisMonth = player.daysPlayedThisMonth + 1;
-
     }
 
     console.log('I won!', player.steamid, didWin, experience);
