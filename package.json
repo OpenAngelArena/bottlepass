@@ -36,6 +36,7 @@
     "send-data": "^8.0.0",
     "sha.js": "^2.4.10",
     "sorted-array": "^2.0.2",
+    "steam-auth": "^0.0.4",
     "steam-id-convertor": "^1.0.1",
     "weakmap-shim": "^1.1.1",
     "xtend": "^4.0.1"
