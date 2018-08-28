@@ -1463,6 +1463,12 @@ lru-cache@^4.0.1:
     pseudomap "^1.0.2"
     yallist "^2.1.2"
 
+media-types@~1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/media-types/-/media-types-1.0.3.tgz#02b339757bceda04e72cd576dd9a631ee5792065"
+  dependencies:
+    negotiator "~0.2.5"
+
 mime-db@~1.30.0:
   version "1.30.0"
   resolved "https://registry.yarnpkg.com/mime-db/-/mime-db-1.30.0.tgz#74c643da2dd9d6a45399963465b26d5ca7d71f01"
@@ -1526,6 +1532,10 @@ nan@~2.8.0:
 natural-compare@^1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/natural-compare/-/natural-compare-1.4.0.tgz#4abebfeed7541f2c27acfb29bdbbd15c8d5ba4f7"
+
+negotiator@~0.2.5:
+  version "0.2.8"
+  resolved "https://registry.yarnpkg.com/negotiator/-/negotiator-0.2.8.tgz#adfd207a3875c4d37095729c2e7c283c5ba2ee72"
 
 node-abi@^2.1.1:
   version "2.1.2"
@@ -1597,6 +1607,12 @@ onetime@^2.0.0:
   resolved "https://registry.yarnpkg.com/onetime/-/onetime-2.0.1.tgz#067428230fd67443b2794b22bba528b6867962d4"
   dependencies:
     mimic-fn "^1.0.0"
+
+openid@^2.0.6:
+  version "2.0.6"
+  resolved "https://registry.yarnpkg.com/openid/-/openid-2.0.6.tgz#707375e59ab9f73025899727679b20328171c9aa"
+  dependencies:
+    request "^2.61.0"
 
 optionator@^0.8.2:
   version "0.8.2"
@@ -1890,6 +1906,13 @@ readable-stream@^2.0.0, readable-stream@^2.0.5, readable-stream@^2.0.6, readable
     string_decoder "~1.0.3"
     util-deprecate "~1.0.1"
 
+redirecter@^0.2.3:
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/redirecter/-/redirecter-0.2.3.tgz#edd0f9ca79332325cdb5fce7cd2bd108f684c739"
+  dependencies:
+    media-types "~1.0.3"
+    send-data "~3.1.2"
+
 repeat-string@^1.5.2:
   version "1.6.1"
   resolved "https://registry.yarnpkg.com/repeat-string/-/repeat-string-1.6.1.tgz#8dcae470e1c88abc2d600fff4a776286da75e637"
@@ -1918,7 +1941,7 @@ request-promise@~0.4.2:
     lodash "^3.10.0"
     request "^2.34"
 
-request@^2.34:
+request@^2.34, request@^2.61.0:
   version "2.88.0"
   resolved "https://registry.yarnpkg.com/request/-/request-2.88.0.tgz#9c2fca4f7d35b592efe57c7f0a55e81052124fef"
   dependencies:
@@ -2084,6 +2107,10 @@ send-data@^8.0.0:
   dependencies:
     json-stringify-safe "^5.0.0"
     xtend "^4.0.0"
+
+send-data@~3.1.2:
+  version "3.1.2"
+  resolved "https://registry.yarnpkg.com/send-data/-/send-data-3.1.2.tgz#2613907bcdd554048031dc3583570acc556104ca"
 
 set-blocking@~2.0.0:
   version "2.0.0"

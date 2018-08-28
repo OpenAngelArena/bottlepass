@@ -6,6 +6,7 @@ const Corsify = require('corsify');
 const sendBoom = require('send-boom');
 const fs = require('fs');
 const path = require('path');
+const steam = require('steam-auth');
 
 const Models = require('./models');
 const SeasonWatcher = require('./season');
@@ -19,6 +20,11 @@ function Init (options) {
   } catch (e) {
   }
 
+  if (!options.baseurl) {
+    options.baseurl = 'http://localhost:' + options.port;
+  }
+
+  options.steam = new steam.Auth(options.baseurl + '/auth/verify', options.baseurl);
   options.models = Models(options);
   // options.imba = IMBA(options);
   options.season = SeasonWatcher(options);
@@ -29,6 +35,7 @@ function Init (options) {
     res.end('OK');
   });
 
+  router.set('/auth/*', require('./endpoints/oauth')(options));
   router.set('/state/save', require('./endpoints/savestate')(options));
   router.set('/state/load', require('./endpoints/loadstate')(options));
   router.set('/match/calculate', require('./endpoints/calculate')(options));
