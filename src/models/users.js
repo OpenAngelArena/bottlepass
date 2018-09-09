@@ -45,6 +45,8 @@ const UserValidator = Joi.object().keys({
 function User (db) {
   var user = CreateModel(UserValidator, 'steamid', db);
 
+  db.del('undefined');
+
   user.addUserProperty = partial(addUserProperty, user);
 
   return user;

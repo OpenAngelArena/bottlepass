@@ -18,7 +18,7 @@ const MMRRankingsValidator = Joi.object().keys({
   })).default([])
 });
 
-function MMRRankings (db, users, profiles) {
+function MMRRankings (options, db, users, profiles) {
   var model = CreateModel(MMRRankingsValidator, 'bracket', db);
 
   var isRunning = false;
@@ -29,7 +29,9 @@ function MMRRankings (db, users, profiles) {
 
   model.BRACKET_BUCKETS = BRACKET_BUCKETS;
 
-  checkUpdateBrackets();
+  if (!options.startSeason) {
+    checkUpdateBrackets();
+  }
 
   return model;
 

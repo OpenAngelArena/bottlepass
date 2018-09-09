@@ -37,16 +37,19 @@ async function precallibrate (state, options) {
     if (!user.bestRanking || player.ranking < user.bestRanking) {
       user.bestRanking = player.ranking;
     }
-    console.log(user);
+    // console.log(user);
     return options.models.users.put(user);
   }));
   var allPlayers = await getAllSortedPlayers(options);
   var allSteamids = allPlayers.map((p) => p.steamid);
-  var newMMRs = normalDistribute(allSteamids, 700, 1300);
+  var newMMRs = normalDistribute(allSteamids, 700, 1400);
 
   // this part can probably take a while
   await Promise.all(newMMRs.map(async function (player) {
     var user = await options.models.users.rawGet(player.steamid);
+    if (!player.mmr || !player.steamid) {
+      console.log('!!!!!!!!!!', player);
+    }
     user.unrankedMMR = player.mmr;
     return options.models.users.put(user);
   }));
@@ -63,9 +66,10 @@ async function getAllSortedPlayers (options) {
     options.models.users.createReadStream()
       .on('data', function (data) {
         var userData = JSON.parse(data.value);
+
         allPlayers.insert({
-          steamid: userData.steamid,
-          mmr: userData.unrankedMMR
+          steamid: data.key,
+          mmr: userData.unrankedMMR || 1000
         });
       })
       .on('error', function (err) {

@@ -11,7 +11,7 @@ function HistoryBoard (options) {
   }
 
   async function controllerAsync (req, res, opts) {
-    var players = await options.models.seasons.topPlayers.get(1);
+    var players = await options.models.seasons.topPlayers.get(2);
 
     sendJSON(req, res, {
       body: players,
