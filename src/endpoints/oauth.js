@@ -1,7 +1,7 @@
 const sendJSON = require('send-data/json');
 const sendBoom = require('send-boom');
 const Boom = require('boom');
-const redirect = require('redirecter')
+const redirect = require('redirecter');
 const { partial } = require('ap');
 const IDConvertor = require('steam-id-convertor');
 const Jwt = require('jsonwebtoken');
@@ -11,7 +11,7 @@ module.exports = OAuth;
 function OAuth (options) {
   const methods = {
     authenticate,
-    verify,
+    verify
   };
 
   return controller;

@@ -93,11 +93,11 @@ function Create (options) {
     }, options.secret);
 
     console.log({
-	          matchid: matchid,
-	          userData: userData,
-	          match: match,
-	          token: token
-	        });
+      matchid: matchid,
+      userData: userData,
+      match: match,
+      token: token
+    });
 
     sendJSON(req, res, {
       matchid: matchid,

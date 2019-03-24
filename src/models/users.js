@@ -17,7 +17,6 @@ const UserValidator = Joi.object().keys({
   currentMatch: Joi.string().empty('').default(''),
 
   // MMR stats
-  rankedMMR: Joi.number().default(1000),
   unrankedMMR: Joi.number().default(1000),
 
   // string filename of the custom bottle

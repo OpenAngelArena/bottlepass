@@ -65,3 +65,4 @@ cert.pem
 privkey.pem
 data.bak
 *.bak/
+data.*/

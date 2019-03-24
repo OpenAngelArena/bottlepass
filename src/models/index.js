@@ -29,9 +29,9 @@ function Models (options) {
   return {
     users: users,
     matches: matches,
-    mmr: mmr,
     profile: profile,
     seasons: seasons,
+    mmr: mmr,
     matchstate: matchstate
   };
 
