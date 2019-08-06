@@ -47,8 +47,20 @@ function User (db) {
   db.del('undefined');
 
   user.addUserProperty = partial(addUserProperty, user);
+  user.get = adjustMMR(user.get);
+  user.getOrCreate = adjustMMR(user.getOrCreate);
 
   return user;
+
+  function adjustMMR (method) {
+    return async function get (id, data) {
+      let user = await method(id, data);
+      if (user.matchesFinished < 20) {
+        user.unrankedMMR = Math.min(user.unrankedMMR, 980 + (user.matchesFinished * 5));
+      }
+      return user;
+    }
+  }
 }
 
 function addUserProperty (model, name, prop) {
