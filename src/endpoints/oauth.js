@@ -26,15 +26,15 @@ function OAuth (options) {
   }
 
   async function authenticate (req, res, opts) {
-    res.redirect = partial(redirect, req, res);
+    const sendRedirect = partial(redirect, req, res);
+    res.redirect = sendRedirect;
     return options.steam.authenticate(req, res);
   }
   async function verify (req, res, opts) {
-    res.redirect = partial(redirect, req, res);
+    const sendRedirect = partial(redirect, req, res);
+    res.redirect = sendRedirect;
     res.locals = {};
     return options.steam.verify(req, res, async function (steamid) {
-      console.log('Hey this worked', steamid, IDConvertor.to32(steamid));
-
       var steamid32 = IDConvertor.to32(steamid);
       var user = await options.models.users.getOrCreate(steamid32 + '');
 
@@ -45,13 +45,7 @@ function OAuth (options) {
         user: user
       }, options.secret);
 
-      sendJSON(req, res, {
-        steamid32: steamid32,
-        user: user,
-        token: token
-      });
+      sendRedirect(options.weburl + "/auth/" + token);
     });
   }
 }
-
-// auth.verify(req, res, function(steamId) {

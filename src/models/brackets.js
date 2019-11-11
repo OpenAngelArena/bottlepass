@@ -29,7 +29,7 @@ function MMRRankings (options, db, users, profiles) {
 
   model.BRACKET_BUCKETS = BRACKET_BUCKETS;
 
-  if (!options.startSeason) {
+  if (!options.startSeason && !options.disable_recalculation) {
     checkUpdateBrackets();
   }
 
