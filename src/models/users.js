@@ -66,7 +66,7 @@ function User (db) {
   }
 }
 
-function addUserProperty (model, name, prop, mapUserToId) {
+function addUserProperty (model, name, prop, mapUserToId, propGetter) {
   var oldGet = model.get;
   var oldGetOrCreate = model.getOrCreate;
   var oldPut = model.put;
@@ -87,9 +87,12 @@ function addUserProperty (model, name, prop, mapUserToId) {
       if (!propId) {
         return otherData;
       }
+      if (!propGetter) {
+        propGetter = (p, pId) => p.getOrCreate(pId, true);
+      }
       return Promise.all([
         otherData,
-        prop.getOrCreate(propId, true)
+        propGetter(prop, propId)
       ]).spread(function (user, propData) {
         user[name] = propData;
 
