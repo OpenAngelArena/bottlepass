@@ -37,6 +37,27 @@ function Team (options, db, users) {
   model.generateInvite = generateInvite;
   model.findTeamByInvite = partial(findTeamByInvite, model);
 
+
+  const oldGet = model.get;
+  const oldGetOrCreate = model.getOrCreate;
+
+  model.get = getter(oldGet);
+  model.getOrCreate = getter(oldGetOrCreate);
+
+  function getter (method) {
+    return async function get (id, data) {
+      const team = await method(id, data);
+
+      team.players = await Promise.all(team.players.map(async (player) => {
+        const user = await users.rawGet(player.steamid);
+        return {...player,
+          mmr: user.unrankedMMR
+        };
+      }));
+
+      return team;
+    };
+  }
   return model;
 }
 
@@ -47,7 +68,7 @@ async function findTeamByPlayer (model, steamid) {
       .on('data', function (data) {
         const teamData = JSON.parse(data.value);
         const entry = teamData.players.filter(p => p.steamid === steamid);
-        if (entry) {
+        if (entry.length) {
           found.push(teamData);
         }
       })

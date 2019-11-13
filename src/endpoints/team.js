@@ -23,7 +23,8 @@ function OAuth (options) {
   const getMethods = {
     invite: getInvite,
     checkInvite,
-    view
+    view,
+    list: listTeams
   };
 
   return {
@@ -110,8 +111,6 @@ function OAuth (options) {
     console.log('Looking up token', token);
     const team = await options.models.team.findTeamByInvite(token);
 
-    console.log('Add user', user, 'to team', team);
-
     team.players = team.players.filter((player) => player.steamid !== user.steamid);
     team.players.push({...user.profile,
       confirmed: false,
@@ -128,21 +127,71 @@ function OAuth (options) {
   async function view (req, res, opts) {
     const { id } = parseUrl(req.url, true).query;
 
-    console.log(id);
+    if (!id) {
+      throw Boom.badRequest('Team ID is required');
+    }
 
     const team = await options.models.team.get(id);
     delete team.invite;
 
-    team.players = await Promise.all(team.players.map(async (player) => {
-      const user = await options.models.users.getOrCreate(player.steamid);
-      console.log(user);
+    sendJSON(req, res, {
+      team
+    });
+  }
+
+  async function listTeams (req, res, opts) {
+    const { steamid } = parseUrl(req.url, true).query;
+    const playerCache = {};
+
+    async function getPlayer(player) {
+      const user = await options.models.users.rawGet(player.steamid);
       return {...player,
         mmr: user.unrankedMMR
       };
-    }));
+    }
 
+    const data = await new Promise((resolve, reject) => {
+      const found = [];
+      options.models.team.createReadStream()
+        .on('data', function (data) {
+          const teamData = JSON.parse(data.value);
+          delete teamData.invite;
+          let isThisOne = false;
+
+          if (steamid) {
+            const entry = teamData.players.filter(p => p.steamid === steamid);
+            if (entry.length) {
+              isThisOne = true;
+            }
+          } else {
+            isThisOne = true;
+          }
+
+          if (isThisOne) {
+            teamData.players = teamData.players.map(async (player) => {
+              if (playerCache[player.steamid]) {
+                return playerCache[player.steamid];
+              }
+              playerCache[player.steamid] = await getPlayer(player);
+              return playerCache[player.steamid];
+            });
+            found.push(teamData);
+          }
+        })
+        .on('error', function (err) {
+          if (!found) {
+            reject(err);
+          }
+        })
+        .on('end', async function () {
+          resolve(found);
+        });
+    });
+    await Promise.all(data.map(async (team) => {
+      team.players = await Promise.all(team.players);
+    }));
     sendJSON(req, res, {
-      team
+      data
     });
   }
 }
