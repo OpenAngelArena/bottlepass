@@ -1,4 +1,5 @@
 const sendJSON = require('send-data/json');
+const Boom = require('boom');
 
 module.exports = TopPlayers;
 
@@ -6,11 +7,15 @@ function TopPlayers (options) {
   return controller;
 
   function controller (req, res, opts, next) {
-    return controllerAsync(req, res, opts)
+    return controllerAsync(req, res, opts, next)
       .catch(next);
   }
 
-  async function controllerAsync (req, res, opts) {
+  async function controllerAsync (req, res, opts, next) {
+    if (opts.splat.substr(0, 3) !== 'top') {
+      throw Boom.notFound();
+    }
+
     var topGroup = Number(opts.splat.substr(3));
 
     if (!Number.isFinite(topGroup)) {

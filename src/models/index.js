@@ -8,23 +8,25 @@ const MMRBracket = require('./brackets');
 const SteamProfile = require('./profile');
 const Seasons = require('./seasons');
 const MatchState = require('./matchstate');
+const Team = require('./team');
 
 module.exports = Models;
 
 const openDatabases = {};
 
 function Models (options) {
-  var dbdir = path.join(options.root, 'db');
+  const dbdir = path.join(options.root, 'db');
   try {
     fs.mkdirSync(dbdir);
   } catch (e) {
   }
-  var users = Users(createDB('users'));
-  var matches = Matches(createDB('matches'));
-  var profile = SteamProfile(options, createDB('steam_profiles'), users);
-  var mmr = MMRBracket(options, createDB('mmr_bracket'), users, profile);
-  var seasons = Seasons(options, createDB('seasons'));
-  var matchstate = MatchState(createDB('matchstate'));
+  const users = Users(createDB('users'));
+  const matches = Matches(createDB('matches'));
+  const profile = SteamProfile(options, createDB('steam_profiles'), users);
+  const mmr = MMRBracket(options, createDB('mmr_bracket'), users, profile);
+  const seasons = Seasons(options, createDB('seasons'));
+  const matchstate = MatchState(createDB('matchstate'));
+  const team = Team(options, createDB('team'), users);
 
   return {
     users: users,
@@ -32,7 +34,8 @@ function Models (options) {
     profile: profile,
     seasons: seasons,
     mmr: mmr,
-    matchstate: matchstate
+    matchstate: matchstate,
+    team: team
   };
 
   function createDB (name) {

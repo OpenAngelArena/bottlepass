@@ -46,11 +46,12 @@ function Init (options) {
   router.set('/history', require('./endpoints/history')(options));
   router.set('/tournament', require('./endpoints/tournament')(options));
   router.set('/tournament.csv', require('./endpoints/tournament.csv')(options));
+  router.set('/team/*', require('./endpoints/team')(options));
   router.set('/users/*', require('./endpoints/users')(options));
   router.set('/top*', require('./endpoints/top')(options));
 
   var cors = Corsify({
-    'Access-Control-Allow-Headers': 'X-Auth-Token, Content-Type, Auth-Checksum'
+    'Access-Control-Allow-Headers': 'Authorization, X-Auth-Token, Content-Type, Auth-Checksum'
   });
 
   var server = http.createServer(cors(handler));

@@ -39,7 +39,9 @@ const UserValidator = Joi.object().keys({
   lastGameOfTheDay: Joi.number().default(0),
   lastWinOfTheDay: Joi.number().default(0),
 
-  abandonPenalty: Joi.number().default(0)
+  abandonPenalty: Joi.number().default(0),
+
+  teamId: Joi.string().empty('').default('')
 });
 
 function User (db) {
@@ -64,7 +66,7 @@ function User (db) {
   }
 }
 
-function addUserProperty (model, name, prop) {
+function addUserProperty (model, name, prop, mapUserToId) {
   var oldGet = model.get;
   var oldGetOrCreate = model.getOrCreate;
   var oldPut = model.put;
@@ -77,9 +79,17 @@ function addUserProperty (model, name, prop) {
 
   function getter (method) {
     return async function get (id, data) {
+      const otherData = method(id, data);
+      let propId = id;
+      if (mapUserToId) {
+        propId = await(mapUserToId(id, otherData));
+      }
+      if (!propId) {
+        return otherData;
+      }
       return Promise.all([
-        method(id, data),
-        prop.getOrCreate(id, true)
+        otherData,
+        prop.getOrCreate(propId, true)
       ]).spread(function (user, propData) {
         user[name] = propData;
 

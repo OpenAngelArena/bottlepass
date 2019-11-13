@@ -28,6 +28,7 @@ function auth (options, next, authOptions) {
       return cb(Boom.unauthorized('Only ' + authOptions.type + ' can use this API'));
     }
 
+    req.auth = decoded;
     req.matchid = decoded.matchid;
 
     return next(req, res, opts, cb);

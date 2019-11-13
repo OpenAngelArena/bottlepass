@@ -6,12 +6,27 @@ const { partial } = require('ap');
 const IDConvertor = require('steam-id-convertor');
 const Jwt = require('jsonwebtoken');
 
+const AuthRequired = require('../auth');
+
 module.exports = OAuth;
+
+OAuth.createToken = createToken;
+
+async function createToken (options, user) {
+  delete user.matches;
+
+  return Jwt.sign({
+    type: 'user',
+    user: user,
+    baseUrl: options.baseurl
+  }, options.secret);
+}
 
 function OAuth (options) {
   const methods = {
     authenticate,
-    verify
+    verify,
+    token: AuthRequired(options, token, { type: 'user' })
   };
 
   return controller;
@@ -19,8 +34,11 @@ function OAuth (options) {
   function controller (req, res, opts, next) {
     var method = opts.splat;
     if (methods[method]) {
-      return methods[method](req, res, opts)
-        .catch(next);
+      const result = methods[method](req, res, options, next);
+      if (result && result.catch) {
+        return result.catch(next);
+      }
+      return result;
     }
     sendBoom(req, res, Boom.badRequest('Unknown action ' + method));
   }
@@ -38,14 +56,17 @@ function OAuth (options) {
       var steamid32 = IDConvertor.to32(steamid);
       var user = await options.models.users.getOrCreate(steamid32 + '');
 
-      delete user.matches;
-
-      var token = await Jwt.sign({
-        type: 'user',
-        user: user
-      }, options.secret);
+      token = await createToken(options, user);
 
       sendRedirect(options.weburl + "/auth/" + token);
+    });
+  }
+  async function token (req, res, opts) {
+    // const token = createToken(options, user);
+    const user = await options.models.users.getOrCreate(req.auth.user.steamid);
+    sendJSON(req, res, {
+      user: user,
+      token: await createToken(options, user)
     });
   }
 }
