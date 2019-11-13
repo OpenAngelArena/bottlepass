@@ -47,11 +47,11 @@ function OAuth (options) {
 
   async function create (req, res, opts) {
     const body = await jsonBody(req, res);
-    const user = await options.models.users.getOrCreate(req.auth.user.steamid);
+    let user = await options.models.users.getOrCreate(req.auth.user.steamid);
 
     const teamId = (user.teamId && user.teamId.length) ? user.teamId : uuidv4();
     user.teamId = teamId;
-    await options.models.users.put({...user});
+    await options.models.users.put(user);
     console.log('Creating team with id', teamId);
     const team = await options.models.team.put({
       id: teamId,
@@ -59,6 +59,8 @@ function OAuth (options) {
       captain: user.steamid,
       players: [user.profile]
     });
+
+    user = await options.models.users.getOrCreate(req.auth.user.steamid);
 
     sendJSON(req, res, {
       team,
