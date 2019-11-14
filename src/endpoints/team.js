@@ -51,14 +51,14 @@ function OAuth (options) {
     let user = await options.models.users.getOrCreate(req.auth.user.steamid);
 
     const teamId = (user.teamId && user.teamId.length) ? user.teamId : uuidv4();
+    const { profile } = user;
     user.teamId = teamId;
     await options.models.users.put(user);
-    console.log('Creating team with id', teamId);
     const team = await options.models.team.put({
       id: teamId,
       name: body.name,
       captain: user.steamid,
-      players: [user.profile]
+      players: [profile]
     });
 
     user = await options.models.users.getOrCreate(req.auth.user.steamid);
@@ -108,7 +108,6 @@ function OAuth (options) {
   async function join (req, res, opts) {
     const user = await options.models.users.getOrCreate(req.auth.user.steamid);
     const { token } = await jsonBody(req, res);
-    console.log('Looking up token', token);
     const team = await options.models.team.findTeamByInvite(token);
 
     team.players = team.players.filter((player) => player.steamid !== user.steamid);

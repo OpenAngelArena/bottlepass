@@ -23,13 +23,14 @@ function Team (options, db, users) {
   var model = CreateModel(TeamValidator, 'id', db);
   users.addUserProperty('team', model, async function mapUserToProp(id, userPromise) {
     const user = await userPromise;
-    return user.teamId;
+    return user.teamId && user.teamId.length ? user.teamId : null;
   }, async function propGetter(prop, propId) {
     try {
-      const props = await prop.get(propId);
+      const props = await model.rawGet(propId);
       delete props.invite;
       return props;
     } catch (e) {
+      console.error(e);
       return null;
     }
   });
@@ -41,6 +42,7 @@ function Team (options, db, users) {
   const oldGet = model.get;
   const oldGetOrCreate = model.getOrCreate;
 
+  model.rawGet = oldGet;
   model.get = getter(oldGet);
   model.getOrCreate = getter(oldGetOrCreate);
 
