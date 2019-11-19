@@ -36,6 +36,7 @@ function Init (options) {
     res.end('OK');
   });
 
+  router.set('/admin/*', require('./endpoints/admin')(options));
   router.set('/auth/*', require('./endpoints/oauth')(options));
   router.set('/state/save', require('./endpoints/savestate')(options));
   router.set('/state/load', require('./endpoints/loadstate')(options));

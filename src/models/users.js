@@ -41,10 +41,11 @@ const UserValidator = Joi.object().keys({
 
   abandonPenalty: Joi.number().default(0),
 
-  teamId: Joi.string().empty('').default('')
+  teamId: Joi.string().empty('').default(''),
+  isAdmin: Joi.boolean().default(false)
 });
 
-function User (db) {
+function User (options, db) {
   var user = CreateModel(UserValidator, 'steamid', db);
 
   db.del('undefined');
@@ -60,6 +61,10 @@ function User (db) {
       let user = await method(id, data);
       if (user.matchesFinished < 20) {
         user.unrankedMMR = Math.min(user.unrankedMMR, 980 + (user.matchesFinished * 5));
+      }
+      // guarentee owner is an admin
+      if (options.steamid && String(user.steamid) === options.steamid) {
+        user.isAdmin = true;
       }
       return user;
     }

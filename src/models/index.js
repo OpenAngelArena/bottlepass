@@ -20,7 +20,7 @@ function Models (options) {
     fs.mkdirSync(dbdir);
   } catch (e) {
   }
-  const users = Users(createDB('users'));
+  const users = Users(options, createDB('users'));
   const matches = Matches(createDB('matches'));
   const profile = SteamProfile(options, createDB('steam_profiles'), users);
   const mmr = MMRBracket(options, createDB('mmr_bracket'), users, profile);
