@@ -18,7 +18,10 @@ function OAuth (options) {
   const postMethods = {
     create,
     createInvite,
-    join
+    join,
+    acceptInvite,
+    rejectInvite,
+    removePlayer: rejectInvite
   };
   const getMethods = {
     invite: getInvite,
@@ -58,7 +61,10 @@ function OAuth (options) {
       id: teamId,
       name: body.name,
       captain: user.steamid,
-      players: [profile]
+      players: [{...profile,
+        confirmed: true,
+        standin: true
+      }]
     });
 
     user = await options.models.users.getOrCreate(req.auth.user.steamid);
@@ -191,6 +197,49 @@ function OAuth (options) {
     }));
     sendJSON(req, res, {
       data
+    });
+  }
+
+  async function acceptInvite(req, res, opts) {
+    const { steamid } = await jsonBody(req, res);
+
+    const user = await options.models.users.getOrCreate(req.auth.user.steamid);
+    const { teamId } = user;
+
+    if (!teamId || !teamId.length) {
+      throw Boom.badRequest('You do not own a team');
+    }
+
+    let team = await options.models.team.getOrCreate(teamId);
+    team.players.forEach((player) => {
+      if (player.steamid !== steamid) {
+        return;
+      }
+      player.confirmed = true;
+    });
+    team = await options.models.team.put(team);
+
+    sendJSON(req, res, {
+      team
+    });
+  }
+
+  async function rejectInvite(req, res, opts) {
+    const { steamid } = await jsonBody(req, res);
+
+    const user = await options.models.users.getOrCreate(req.auth.user.steamid);
+    const { teamId } = user;
+
+    if (!teamId || !teamId.length) {
+      throw Boom.badRequest('You do not own a team');
+    }
+
+    let team = await options.models.team.getOrCreate(teamId);
+    team.players = team.players.filter((p) => p.steamid !== steamid);
+    team = await options.models.team.put(team);
+
+    sendJSON(req, res, {
+      team
     });
   }
 }
