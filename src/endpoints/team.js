@@ -63,6 +63,7 @@ function OAuth (options) {
       captain: user.steamid,
       players: [{...profile,
         confirmed: true,
+        mmr: user.unrankedMMR,
         standin: true
       }]
     });
@@ -78,9 +79,15 @@ function OAuth (options) {
   async function createInvite (req, res, opts) {
     const user = await options.models.users.getOrCreate(req.auth.user.steamid);
     const teamId = user.teamId;
-    if (user.steamid !== user.team.captain) {
-      throw Boom.forbidden('Only the captain can create invite links');
-    }
+
+    const team = await options.models.team.getOrCreate(teamId);
+
+    team.invite = options.models.team.generateInvite();
+    await options.models.team.put(team);
+
+    sendJSON(req, res, {
+      token: team.invite
+    });
   }
 
   async function getInvite (req, res, opts) {
@@ -119,6 +126,7 @@ function OAuth (options) {
     team.players = team.players.filter((player) => player.steamid !== user.steamid);
     team.players.push({...user.profile,
       confirmed: false,
+      mmr: user.unrankedMMR,
       standin: false
     });
 
