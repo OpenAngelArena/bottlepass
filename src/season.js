@@ -94,7 +94,7 @@ function normalDistribute (players, min, max) {
 
     return {
       steamid: steamid,
-      mmr: Math.max(1000, Math.round(1000 * (factor * (max - min) + min)) / 1000)
+      mmr: 1000
     };
   });
 }

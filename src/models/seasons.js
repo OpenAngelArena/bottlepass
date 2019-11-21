@@ -36,6 +36,11 @@ function Seasons (options, db) {
   var stateModel = CreateModel(SeasonStateValidator, 'id', db);
   var topScoresModel = CreateModel(SeasonScoreboard, 'season', db);
 
+  stateModel.getOrCreate(STATE_ID)
+    .then((data) => {
+      console.log('Starting season', data.currentSeason);
+    });
+
   return {
     getState: partial(getState, stateModel, options),
     setState: partial(setState, stateModel),
@@ -48,11 +53,9 @@ async function getState (model, options) {
 
   mostRecentSeason = Math.max(data.currentSeason, mostRecentSeason);
 
-  if (Date.now() > data.nextSeason) {
-    // don't start new seasons unless I say so.
-    if (options.startSeason) {
-      return startSeason(model);
-    }
+  // don't start new seasons unless I say so.
+  if (data.currentSeason < Number(options.currentSeason || 0)) {
+    return startSeason(model);
   }
 
   return data;

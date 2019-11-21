@@ -6,7 +6,7 @@ const Level = require('level');
 
 const DB_DIR = path.join(__dirname, '../../test/sessions');
 var options = {
-  startSeason: true
+  currentSeason: 1
 };
 
 test('seasons model', function (t) {
