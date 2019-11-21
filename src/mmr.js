@@ -50,11 +50,7 @@ function calculateTeamScores (team, scoreChange, matchID) {
       myElo = getElo(averageMMRWithoutMe, player.mmr);
     }
 
-    if (scoreChange < 0) {
-      scoreChange *= 0.2;
-    }
-
-    player.adjustedMMR = player.mmr + scoreChange * myElo;
+    player.adjustedMMR = player.mmr + scoreChange * myElo * 0.2;
   });
 }
 
