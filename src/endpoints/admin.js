@@ -23,7 +23,7 @@ function OAuth (options) {
   return {
     GET: AuthRequired(options, partial(controller, getMethods), { type: 'user' }),
     // GET: partial(controller, getMethods),
-    POST: AuthRequired(options, partial(controller, postMethods), { type: 'user' }),
+    POST: AuthRequired(options, partial(controller, postMethods), { type: 'user' })
   };
 
   async function controller (methods, req, res, opts, next) {

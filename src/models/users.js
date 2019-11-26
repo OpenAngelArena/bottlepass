@@ -67,7 +67,7 @@ function User (options, db) {
         user.isAdmin = true;
       }
       return user;
-    }
+    };
   }
 }
 
@@ -87,7 +87,7 @@ function addUserProperty (model, name, prop, mapUserToId, propGetter) {
       const otherData = method(id, data);
       let propId = id;
       if (mapUserToId) {
-        propId = await(mapUserToId(id, otherData));
+        propId = await (mapUserToId(id, otherData));
       }
       if (!propId) {
         return otherData;

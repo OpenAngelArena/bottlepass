@@ -5,6 +5,7 @@ const rimraf = require('rimraf');
 const Promise = require('bluebird');
 const sha = require('sha.js');
 
+const OAuth = require('./endpoints/oauth');
 const Init = require('./init');
 
 process.on('unhandledRejection', (err) => {
@@ -345,6 +346,11 @@ test('full server test', function (t) {
       t.fail('should be able to get top user list');
     }
 
+    t.end();
+  });
+  t.test('teams', async function (t) {
+    // create a team first
+    // auth
     t.end();
   });
   t.test('end', function (t) {

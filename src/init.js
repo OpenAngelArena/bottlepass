@@ -25,7 +25,7 @@ function Init (options) {
   }
 
   options.steam = new steam.Auth(options.baseurl + '/auth/verify', options.baseurl);
-  options.steamApi = new steam.Api(options.steamkey)
+  options.steamApi = new steam.Api(options.steamkey);
   options.models = Models(options);
   // options.imba = IMBA(options);
   options.season = SeasonWatcher(options);

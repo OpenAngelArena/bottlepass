@@ -21,7 +21,9 @@ function OAuth (options) {
     join,
     acceptInvite,
     rejectInvite,
-    removePlayer: rejectInvite
+    removePlayer: rejectInvite,
+    leaveTeam,
+    updateTeam,
   };
   const getMethods = {
     invite: getInvite,
@@ -33,7 +35,7 @@ function OAuth (options) {
   return {
     GET: AuthRequired(options, partial(controller, getMethods), { type: 'user' }),
     // GET: partial(controller, getMethods),
-    POST: AuthRequired(options, partial(controller, postMethods), { type: 'user' }),
+    POST: AuthRequired(options, partial(controller, postMethods), { type: 'user' })
   };
 
   function controller (methods, req, res, opts, next) {
@@ -156,7 +158,7 @@ function OAuth (options) {
     const { steamid } = parseUrl(req.url, true).query;
     const playerCache = {};
 
-    async function getPlayer(player) {
+    async function getPlayer (player) {
       const user = await options.models.users.rawGet(player.steamid);
       return {...player,
         mmr: user.unrankedMMR
@@ -208,7 +210,7 @@ function OAuth (options) {
     });
   }
 
-  async function acceptInvite(req, res, opts) {
+  async function acceptInvite (req, res, opts) {
     const { steamid } = await jsonBody(req, res);
 
     const user = await options.models.users.getOrCreate(req.auth.user.steamid);
@@ -232,7 +234,7 @@ function OAuth (options) {
     });
   }
 
-  async function rejectInvite(req, res, opts) {
+  async function rejectInvite (req, res, opts) {
     const { steamid } = await jsonBody(req, res);
 
     const user = await options.models.users.getOrCreate(req.auth.user.steamid);
@@ -246,6 +248,41 @@ function OAuth (options) {
     team.players = team.players.filter((p) => p.steamid !== steamid);
     team = await options.models.team.put(team);
 
+    sendJSON(req, res, {
+      team
+    });
+  }
+
+  async function leaveTeam (req, res, opts) {
+    const { teamId } = await jsonBody(req, res);
+    if (!teamId) {
+      return sendBoom(req, res, Boom.badRequest('teamId is required'));
+    }
+    const team = await options.models.team.getOrCreate(teamId);
+    const { user } = req.auth;
+
+    team.players = team.players.filter((player) => player.steamid !== user.steamid);
+    await options.models.team.put(team);
+    sendJSON(req, res, {
+      team
+    });
+  }
+
+  async function updateTeam (req, res, opts) {
+    const { name } = await jsonBody(req, res);
+
+    const user = await options.models.users.getOrCreate(req.auth.user.steamid);
+    const { teamId } = user;
+
+    if (!teamId || !teamId.length) {
+      throw Boom.badRequest('You do not own a team');
+    }
+
+    let team = await options.models.team.getOrCreate(teamId);
+    if (name) {
+      team.name = name;
+    }
+    await options.models.team.put(team);
     sendJSON(req, res, {
       team
     });

@@ -58,7 +58,7 @@ function OAuth (options) {
 
       token = await createToken(options, user);
 
-      sendRedirect(options.weburl + "/auth/" + token);
+      sendRedirect(options.weburl + '/auth/' + token);
     });
   }
   async function token (req, res, opts) {
