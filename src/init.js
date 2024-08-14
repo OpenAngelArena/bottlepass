@@ -43,6 +43,8 @@ function Init (options) {
   router.set('/match/calculate', require('./endpoints/calculate')(options));
   router.set('/match/complete', require('./endpoints/complete')(options));
   router.set('/match/send_teams', require('./endpoints/send_teams')(options));
+  router.set('/match/send_bans', require('./endpoints/send_bans')(options));
+  router.set('/match/send_heroes', require('./endpoints/send_heroes')(options));
   router.set('/auth', require('./endpoints/auth')(options));
   router.set('/history', require('./endpoints/history')(options));
   router.set('/tournament', require('./endpoints/tournament')(options));
