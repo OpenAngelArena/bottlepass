@@ -53,6 +53,16 @@ function calculateTeamScores (team, scoreChange, matchID) {
       myElo = getElo(averageMMRWithoutMe, averageMMR);
     }
 
+    if (scoreChange < 0) {
+      if (player.mmr < MIN_MMR) {
+        myElo *= 0.5;
+      } else if (player.mmr >= MIN_MMR && player.mmr < MID_MMR) {
+        myElo *= 0.75;
+      } else if (player.mmr >= MID_MMR && player.mmr < MASTER_MMR) {
+        myElo *= 0.9;
+      }
+    }
+
     player.adjustedMMR = player.mmr + scoreChange * myElo;
   });
 }
