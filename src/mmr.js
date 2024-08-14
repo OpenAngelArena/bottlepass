@@ -47,7 +47,10 @@ function calculateTeamScores (team, scoreChange, matchID) {
       }).reduce(function (score, otherPlayer) {
         return otherPlayer.mmr + score;
       }, 0) / (team.length - 1);
-      myElo = getElo(averageMMRWithoutMe, player.mmr);
+      var averageMMR = team.reduce(function (score, otherPlayer) {
+        return otherPlayer.mmr + score;
+      }, 0) / (team.length);
+      myElo = getElo(averageMMRWithoutMe, averageMMR);
     }
 
     if (scoreChange < 0) {
