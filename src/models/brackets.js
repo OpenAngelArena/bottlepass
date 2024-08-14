@@ -98,7 +98,7 @@ async function calculateBracketsAfter (model, users, afterMMR, ranking) {
             index--;
           }
           top100.splice(index, 0, user);
-          if (top100.length > 100) {
+          if (top100.length > BRACKET_BUCKETS) {
             top100.pop();
           }
         }
