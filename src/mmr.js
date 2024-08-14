@@ -1,4 +1,4 @@
-const MAX_K = 100;
+const MAX_K = 80;
 const MIN_MMR = 1000;
 const MID_MMR = 1500;
 const MASTER_MMR = 2000;
@@ -24,7 +24,7 @@ function getKFactor (mmr) {
   } else if (mmr >= MIN_MMR && mmr < MID_MMR) {
     return MAX_K / 2;
   } else if (mmr >= MID_MMR && mmr < MASTER_MMR) {
-    // eaze from MID_MMR to MASTER_MMR approaching 16
+    // eaze from MID_MMR to MASTER_MMR approaching K/4
     return (MAX_K / 2) - ((MAX_K / 4) * (mmr / MID_MMR - 1));
   } else {
     return (MAX_K / 4); // master player
@@ -51,10 +51,6 @@ function calculateTeamScores (team, scoreChange, matchID) {
         return otherPlayer.mmr + score;
       }, 0) / (team.length);
       myElo = getElo(averageMMRWithoutMe, averageMMR);
-    }
-
-    if (scoreChange < 0) {
-      myElo *= 0.8;
     }
 
     player.adjustedMMR = player.mmr + scoreChange * myElo;
