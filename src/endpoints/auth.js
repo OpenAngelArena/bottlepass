@@ -63,7 +63,7 @@ function Create (options) {
 
     var userData = {};
     var isNewPlayerGame = true;
-    var isRankedGame = users.length === 10 && (body.isRanked || body.isCM);
+    var isRankedGame = users.length > 1 && (body.isRanked || body.isCM);
 
     users.forEach(function (user) {
       if (user.matchesStarted > 3) {

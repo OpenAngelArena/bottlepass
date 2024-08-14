@@ -71,7 +71,7 @@ function CompleteMatch (options) {
     });
     var playerDiffs = [];
 
-    if (match.players.length === 10 && body.players.length >= 4) {
+//    if (match.players.length === 10 && body.players.length >= 4) {
       if (match.isRankedGame && match.gameLength > 600 && body.isValid) {
         let mmrMatch = {
           radiant: await Promise.all(match.teams.radiant.map(getPlayerEntry)),
@@ -95,9 +95,9 @@ function CompleteMatch (options) {
       } else {
         playerDiffs = await Promise.all(body.players.map(partial(endFullUnrankedGame, match, abandonedPlayers)));
       }
-    } else {
-      await Promise.all(body.players.map(endUnrankedGame));
-    }
+//    } else {
+  //    await Promise.all(body.players.map(endUnrankedGame));
+   // }
 
     await options.models.matches.put(match);
 

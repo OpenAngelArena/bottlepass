@@ -1,6 +1,6 @@
-const MAX_K = 80;
-const MIN_MMR = 500;
-const MID_MMR = 1000;
+const MAX_K = 100;
+const MIN_MMR = 1000;
+const MID_MMR = 1500;
 const MASTER_MMR = 2000;
 
 module.exports = {
@@ -51,7 +51,7 @@ function calculateTeamScores (team, scoreChange, matchID) {
     }
 
     if (scoreChange < 0) {
-      myElo *= 0.2;
+      myElo *= 0.8;
     }
 
     player.adjustedMMR = player.mmr + scoreChange * myElo;
