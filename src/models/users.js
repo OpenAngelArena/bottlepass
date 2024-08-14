@@ -42,7 +42,11 @@ const UserValidator = Joi.object().keys({
   abandonPenalty: Joi.number().default(0),
 
   teamId: Joi.string().empty('').default(''),
-  isAdmin: Joi.boolean().default(false)
+  isAdmin: Joi.boolean().default(false),
+
+  // hero name -> count
+  heroPicks: Joi.object().default({}),
+  heroBans: Joi.object().default({}),
 });
 
 function User (options, db) {

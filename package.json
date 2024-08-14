@@ -28,7 +28,7 @@
     "http-hash-router": "^1.1.0",
     "joi": "^13.1.0",
     "jsonwebtoken": "^8.1.0",
-    "level": "^2.1.1",
+    "level": "^5",
     "openid": "^2.0.6",
     "rc": "^1.2.3",
     "redirecter": "^0.2.3",

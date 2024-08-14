@@ -29,7 +29,16 @@ const MatchValidator = Joi.object().keys({
   }).default({
     dire: [],
     radiant: []
-  })
+  }),
+
+  banChoices: Joi.object().default({}),
+  bans: Joi.array().items(Joi.string()).default([]),
+
+  heroPicks: Joi.object().pattern(Joi.string(), Joi.object().keys({
+    hero: Joi.string().required(),
+    random: Joi.boolean().required(),
+    rerandom: Joi.boolean().required()
+  })).default({}),
 });
 
 function Match (db) {
