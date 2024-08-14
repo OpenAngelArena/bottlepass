@@ -1,7 +1,5 @@
 const Joi = require('joi');
 const CreateModel = require('./model');
-const SortedArray = require('sorted-array');
-// const partial = require('ap').partial;
 
 module.exports = MMRRankings;
 
@@ -81,17 +79,28 @@ async function calculateBracketsAfter (model, users, afterMMR, ranking) {
   }
   return new Promise(function (resolve, reject) {
     console.log('CALCULATING BRACKETS');
-    var top100 = SortedArray.comparing((entry) => 0 - entry.mmr, []);
+    // array of users, keep sorted by mmr and trim constantly
+    const top100 = [];
 
     users.createReadStream()
       .on('data', function (data) {
         var userData = JSON.parse(data.value);
         if (!afterMMR || userData.unrankedMMR < afterMMR) {
-          top100.insert({
-            steamid: userData.steamid,
+          // insert user into the array at the correct position
+          // if the array is full, pop the last user off
+          const user = {
+            steamid: data.key,
             mmr: userData.unrankedMMR
-          });
-          top100.array.splice(BRACKET_BUCKETS);
+          };
+          // users come back in a random order, so we have to insert them in the correct order
+          var index = top100.length;
+          while (index && top100[index - 1].mmr < user.mmr) {
+            index--;
+          }
+          top100.splice(index, 0, user);
+          if (top100.length > 100) {
+            top100.pop();
+          }
         }
       })
       .on('error', function (err) {
@@ -100,10 +109,10 @@ async function calculateBracketsAfter (model, users, afterMMR, ranking) {
       })
       .on('end', async function () {
         console.log('Finished calculating top MMR');
-        top100.array.forEach(function (playerEntry) {
+        top100.forEach(function (playerEntry) {
           playerEntry.ranking = ++ranking;
         });
-        resolve(top100.array);
+        resolve(top100);
       });
   });
 }
