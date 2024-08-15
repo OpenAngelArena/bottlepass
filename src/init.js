@@ -52,6 +52,7 @@ function Init (options) {
   router.set('/team/*', require('./endpoints/team')(options));
   router.set('/users/*', require('./endpoints/users')(options));
   router.set('/matches/*', require('./endpoints/matches')(options));
+  router.set('/active_matches', require('./endpoints/active_matches')(options));
   router.set('/top*', require('./endpoints/top')(options));
 
   var cors = Corsify({

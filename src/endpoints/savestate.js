@@ -19,6 +19,10 @@ const BodyValidator = Joi.object().keys({
   state: Joi.object()
 });
 
+const ActiveMatches = {};
+
+SaveState.ActiveMatches = ActiveMatches;
+
 function SaveState (options) {
   return {
     // GET: getController,
@@ -39,6 +43,13 @@ function SaveState (options) {
       throw body.error;
     }
     body = body.value;
+
+    if (ActiveMatches[req.matchid]) {
+      clearTimeout(ActiveMatches[req.matchid]);
+    }
+    setTimeout(() => {
+      delete ActiveMatches[req.matchid];
+    }, 1000 * 60 * 5);
 
     var match = await options.models.matches.get(req.matchid);
     // do stuff with match? i dunnno....
