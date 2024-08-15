@@ -14,9 +14,7 @@ function ActiveMatchController (options) {
   }
 
   async function controllerAsync (req, res, opts) {
-    console.log(ActiveMatches);
-
-    sendJSON(req, res, await Promise.all(Object.keys(ActiveMatches)
+    return sendJSON(req, res, await Promise.all(Object.keys(ActiveMatches)
       .map(async (matchId) => {
         try {
           const match = await options.models.matches.get(matchId);
@@ -29,7 +27,7 @@ function ActiveMatchController (options) {
             }
           }
 
-          return { matchId, match, score: state ? state.points : null, time: state ? state.time : null };
+          return { matchId, match, score: state ? state.state.points : null, time: state ? state.state.time : null };
         } catch (err) {
           console.log(err.notFound, err);
           if (err.notFound) {
