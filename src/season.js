@@ -25,20 +25,20 @@ async function precallibrate (state, options) {
   var topPlayers = await options.models.mmr.getOrCreate('0');
   topPlayers = topPlayers.players.slice(0, 100);
 
-  await options.models.seasons.topPlayers.put({
-    season: state.currentSeason - 1,
-    players: topPlayers
-  });
+  // await options.models.seasons.topPlayers.put({
+  //   season: state.currentSeason - 1,
+  //   players: topPlayers
+  // });
 
-  await Promise.all(topPlayers.map(async function (player) {
-    var user = await options.models.users.rawGet(player.steamid);
-    user.seasonPlacings++;
-    if (!user.bestRanking || player.ranking < user.bestRanking) {
-      user.bestRanking = player.ranking;
-    }
-    // console.log(user);
-    return options.models.users.put(user);
-  }));
+  // await Promise.all(topPlayers.map(async function (player) {
+  //   var user = await options.models.users.rawGet(player.steamid);
+  //   user.seasonPlacings++;
+  //   if (!user.bestRanking || player.ranking < user.bestRanking) {
+  //     user.bestRanking = player.ranking;
+  //   }
+  //   // console.log(user);
+  //   return options.models.users.put(user);
+  // }));
   var allPlayers = await getAllSortedPlayers(options);
   var allSteamids = allPlayers.map((p) => p.steamid);
   var newMMRs = normalDistribute(allSteamids, 700, 1400);
@@ -70,7 +70,7 @@ async function getAllSortedPlayers (options) {
         while (index && allPlayers[index - 1].mmr < user.mmr) {
           index--;
         }
-        top100.splice(index, 0, {
+        allPlayers.splice(index, 0, {
           steamid: data.key,
           mmr: userData.unrankedMMR || 1000
         });
