@@ -15,9 +15,9 @@ function Matches (options) {
     var matchId = opts.splat;
 
     try {
-      var user = await options.models.matches.get(matchId);
+      var match = await options.models.matches.get(matchId);
 
-      return sendJSON(req, res, user);
+      return sendJSON(req, res, match);
     } catch (err) {
       console.log(err.notFound, err);
       if (err.notFound) {

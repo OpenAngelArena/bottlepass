@@ -1,4 +1,3 @@
-const SortedArray = require('sorted-array');
 
 module.exports = SeasonWatcher;
 
@@ -61,13 +60,17 @@ async function precallibrate (state, options) {
 
 async function getAllSortedPlayers (options) {
   return new Promise(function (resolve, reject) {
-    var allPlayers = SortedArray.comparing((entry) => entry.mmr, []);
+    var allPlayers = [];
 
     options.models.users.createReadStream()
       .on('data', function (data) {
         var userData = JSON.parse(data.value);
 
-        allPlayers.insert({
+        var index = allPlayers.length;
+        while (index && allPlayers[index - 1].mmr < user.mmr) {
+          index--;
+        }
+        top100.splice(index, 0, {
           steamid: data.key,
           mmr: userData.unrankedMMR || 1000
         });
@@ -79,7 +82,7 @@ async function getAllSortedPlayers (options) {
       .on('end', async function () {
         console.log('Finished reading in all MMR values');
 
-        resolve(allPlayers.array);
+        resolve(allPlayers);
       });
   });
 }
