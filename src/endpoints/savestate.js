@@ -47,7 +47,7 @@ function SaveState (options) {
     if (ActiveMatches[req.matchid]) {
       clearTimeout(ActiveMatches[req.matchid]);
     }
-    setTimeout(() => {
+    ActiveMatches[req.matchid] = setTimeout(() => {
       delete ActiveMatches[req.matchid];
     }, 1000 * 60 * 5);
 
