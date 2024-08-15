@@ -16,6 +16,6 @@ function ActiveMatchController (options) {
   async function controllerAsync (req, res, opts) {
     console.log(ActiveMatches);
 
-    sendJSON(req, res, ActiveMatches);
+    sendJSON(req, res, Object.keys(ActiveMatches));
   }
 }
