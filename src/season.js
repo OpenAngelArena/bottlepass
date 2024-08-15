@@ -52,6 +52,7 @@ async function precallibrate (state, options) {
     user.unrankedMMR = player.mmr;
     return options.models.users.put(user);
   }));
+  console.log('Finished writing every users new mmr, starting season!');
 
   state.seasonState = 'running';
   await options.models.seasons.setState(state);
