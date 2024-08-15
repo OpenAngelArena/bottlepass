@@ -16,6 +16,18 @@ function ActiveMatchController (options) {
   async function controllerAsync (req, res, opts) {
     console.log(ActiveMatches);
 
-    sendJSON(req, res, Object.keys(ActiveMatches));
+    sendJSON(req, res, await Promise.all(Object.keys(ActiveMatches)
+      .map(async (matchId) => {
+        try {
+          return await options.models.matches.get(matchId);
+        } catch (err) {
+          console.log(err.notFound, err);
+          if (err.notFound) {
+            return null;
+          }
+          throw err;
+        }
+      })
+    ));
   }
 }
