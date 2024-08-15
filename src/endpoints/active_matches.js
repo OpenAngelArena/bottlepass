@@ -14,6 +14,6 @@ function ActiveMatchController (options) {
   }
 
   async function controllerAsync (req, res, opts) {
-    return sendJSON(req, res, ActiveMatches);
+    sendJSON(req, res, ActiveMatches);
   }
 }
