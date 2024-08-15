@@ -23,7 +23,7 @@ function ActiveMatchController (options) {
           let state = null;
           if (match.stateId) {
             try {
-              state = await options.models.matchstate.get(matchId);
+              state = await options.models.matchstate.get(match.stateId);
             } catch (err) {
               // don't care
             }
