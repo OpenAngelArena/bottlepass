@@ -65,15 +65,16 @@ async function getAllSortedPlayers (options) {
     options.models.users.createReadStream()
       .on('data', function (data) {
         var userData = JSON.parse(data.value);
+        const user = {
+          steamid: data.key,
+          mmr: userData.unrankedMMR || 1000
+        };
 
         var index = allPlayers.length;
         while (index && allPlayers[index - 1].mmr < user.mmr) {
           index--;
         }
-        allPlayers.splice(index, 0, {
-          steamid: data.key,
-          mmr: userData.unrankedMMR || 1000
-        });
+        allPlayers.splice(index, 0, user);
       })
       .on('error', function (err) {
         console.log('Error reading users!', err);
