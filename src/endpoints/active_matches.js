@@ -1,5 +1,5 @@
 const sendJSON = require('send-data/json');
-const Boom = require('boom');
+// const Boom = require('boom');
 
 const { ActiveMatches } = require('./savestate');
 
@@ -27,7 +27,12 @@ function ActiveMatchController (options) {
             }
           }
 
-          return { matchId, match, score: state ? state.state.points : null, time: state ? state.state.time : null };
+          return {
+            matchId,
+            match,
+            score: state ? state.state.points : null,
+            time: state ? state.state.time : null
+          };
         } catch (err) {
           console.log(err.notFound, err);
           if (err.notFound) {

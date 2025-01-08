@@ -6,7 +6,7 @@
   "author": "Chris Vickery <chrisinajar@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "test": "tape ./src/**/*test.js | tap-spec && semistandard --fix",
+    "test": "tape ./src/**/*.test.js | tap-spec && semistandard --fix",
     "start": "node ./index.js"
   },
   "devDependencies": {

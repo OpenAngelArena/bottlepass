@@ -24,7 +24,7 @@ function auth (options, next, authOptions) {
       return cb(Boom.badRequest('Bad JWT: ' + ex.message));
     }
 
-    if (decoded.type !== authOptions.type) {
+    if (!decoded || decoded.type !== authOptions.type) {
       return cb(Boom.unauthorized('Only ' + authOptions.type + ' can use this API'));
     }
 

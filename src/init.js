@@ -54,6 +54,7 @@ function Init (options) {
   router.set('/matches/*', require('./endpoints/matches')(options));
   router.set('/active_matches', require('./endpoints/active_matches')(options));
   router.set('/top*', require('./endpoints/top')(options));
+  router.set('/unpopular-heroes', require('./endpoints/unpopular-heroes')(options));
 
   var cors = Corsify({
     'Access-Control-Allow-Headers': 'Authorization, X-Auth-Token, Content-Type, Auth-Checksum'

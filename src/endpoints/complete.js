@@ -71,33 +71,33 @@ function CompleteMatch (options) {
     });
     var playerDiffs = [];
 
-//    if (match.players.length === 10 && body.players.length >= 4) {
-      if (match.isRankedGame && match.gameLength > 600 && body.isValid) {
-        let mmrMatch = {
-          radiant: await Promise.all(match.teams.radiant.map(getPlayerEntry)),
-          dire: await Promise.all(match.teams.dire.map(getPlayerEntry))
-        };
-        if (body.winner === 'dire') {
-          mmrMatch = MMR.processScores(mmrMatch, 1, 0);
-        } else {
-          mmrMatch = MMR.processScores(mmrMatch, 0, 1);
-        }
-        console.log(mmrMatch);
-        console.log(match);
-
-        playerDiffs = await Promise.all([
-          Promise.all(mmrMatch.dire.map(partial(endRankedGame, connectedPlayers, abandonedPlayers, match, (body.winner === 'dire')))),
-          Promise.all(mmrMatch.radiant.map(partial(endRankedGame, connectedPlayers, abandonedPlayers, match, (body.winner === 'radiant'))))
-        ]);
-        playerDiffs = playerDiffs[0].concat(playerDiffs[1]);
-
-        options.models.mmr.updateMMR();
+    //    if (match.players.length === 10 && body.players.length >= 4) {
+    if (match.isRankedGame && match.gameLength > 600 && body.isValid) {
+      let mmrMatch = {
+        radiant: await Promise.all(match.teams.radiant.map(getPlayerEntry)),
+        dire: await Promise.all(match.teams.dire.map(getPlayerEntry))
+      };
+      if (body.winner === 'dire') {
+        mmrMatch = MMR.processScores(mmrMatch, 1, 0);
       } else {
-        playerDiffs = await Promise.all(body.players.map(partial(endFullUnrankedGame, match, abandonedPlayers)));
+        mmrMatch = MMR.processScores(mmrMatch, 0, 1);
       }
-//    } else {
-  //    await Promise.all(body.players.map(endUnrankedGame));
-   // }
+      console.log(mmrMatch);
+      console.log(match);
+
+      playerDiffs = await Promise.all([
+        Promise.all(mmrMatch.dire.map(partial(endRankedGame, connectedPlayers, abandonedPlayers, match, (body.winner === 'dire')))),
+        Promise.all(mmrMatch.radiant.map(partial(endRankedGame, connectedPlayers, abandonedPlayers, match, (body.winner === 'radiant'))))
+      ]);
+      playerDiffs = playerDiffs[0].concat(playerDiffs[1]);
+
+      options.models.mmr.updateMMR();
+    } else {
+      playerDiffs = await Promise.all(body.players.map(partial(endFullUnrankedGame, match, abandonedPlayers)));
+    }
+    //    } else {
+    //    await Promise.all(body.players.map(endUnrankedGame));
+    // }
 
     await options.models.matches.put(match);
 

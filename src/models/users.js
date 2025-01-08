@@ -46,7 +46,7 @@ const UserValidator = Joi.object().keys({
 
   // hero name -> count
   heroPicks: Joi.object().default({}),
-  heroBans: Joi.object().default({}),
+  heroBans: Joi.object().default({})
 });
 
 function User (options, db) {

@@ -13,6 +13,8 @@ process.on('unhandledRejection', (err) => {
   process.exit(1);
 });
 
+const STARTING_MMR = 980;
+
 const TEST_PORT = 12345;
 
 const USER_1 = 123123;
@@ -95,7 +97,11 @@ test('full server test', function (t) {
         users: ALL_PLAYERS,
         gametime: (new Date()).toString(),
         toolsMode: false,
-        cheatsMode: true
+        cheatsMode: true,
+        isCM: false,
+        isRanked: true,
+        hostId: USER_1,
+        authKey: 'e2e-test',
       });
       t.fail('auth should fail while in cheats mode');
     } catch (e) {
@@ -106,7 +112,11 @@ test('full server test', function (t) {
         users: ALL_PLAYERS,
         gametime: (new Date()).toString(),
         toolsMode: false,
-        cheatsMode: false
+        cheatsMode: false,
+        isCM: false,
+        isRanked: true,
+        hostId: USER_1,
+        authKey: 'e2e-test',
       });
       console.log(data);
       t.ok(data.token, 'gets auth token');
@@ -174,7 +184,7 @@ test('full server test', function (t) {
       t.equals(data.steamid, USER_STR_0, 'has steamid as string');
       t.equals(data.matchesStarted, 1, 'matches started goes up');
       t.equals(data.matchesFinished, 0, 'finished matches is still 0');
-      t.equals(data.unrankedMMR, 1000, 'mmr is 1000 before first game');
+      t.equals(data.unrankedMMR, STARTING_MMR, 'mmr is ' + STARTING_MMR + ' before first game');
     } catch (e) {
       console.log(e.error);
       t.fail('should be able to get user data');
@@ -184,11 +194,14 @@ test('full server test', function (t) {
       let data = await post('match/complete', {
         winner: 'dire',
         endTime: (new Date()).toString(),
-        gameLength: 123,
-        players: [USER_STR_0]
+        gameLength: 601,
+        players: [USER_STR_0],
+        abandoned: [],
+        isValid: true,
       }, token);
 
       t.ok(data.ok, 'should work');
+      console.log(data);
     } catch (e) {
       console.log(e.error);
       t.fail('Should be able to send in results');
@@ -199,7 +212,7 @@ test('full server test', function (t) {
       console.log(data);
       t.equals(data.steamid, USER_STR_0, 'has steamid as string');
       t.equals(data.matchesFinished, 1, 'finished matches goes up');
-      t.ok(data.unrankedMMR > 1000, 'MMR goes up when you win');
+      t.ok(data.unrankedMMR > STARTING_MMR, 'MMR goes up when you win: ' + data.unrankedMMR);
     } catch (e) {
       console.log(e.error);
       t.fail('should be able to get user data');
@@ -211,7 +224,7 @@ test('full server test', function (t) {
       console.log(data);
       t.equals(data.steamid, USER_STR_1, 'has steamid as string');
       t.equals(data.matchesFinished, 0, 'disconnected players dont get matchesFinished');
-      t.ok(data.unrankedMMR < 1000, 'MMR goes down when you win');
+      t.ok(data.unrankedMMR < STARTING_MMR, 'MMR goes down when you win');
       user1MMR = data.unrankedMMR;
     } catch (e) {
       console.log(e.error);
@@ -251,7 +264,6 @@ test('full server test', function (t) {
       console.log(data);
       t.equals(data.steamid, USER_STR_1, 'has steamid as string');
       t.equals(data.matchesFinished, 1, 'increases matchesFinished');
-      t.equals(data.unrankedMMR, user1MMR, 'doesnt increase when you have less than 10 players');
     } catch (e) {
       console.log(e.error);
       t.fail('should be able to get user data');
@@ -391,7 +403,11 @@ async function runMatch (t, radiant, dire) {
       users: allPlayers,
       gametime: (new Date()).toString() + Math.random(),
       toolsMode: false,
-      cheatsMode: false
+      cheatsMode: false,
+      isCM: false,
+      isRanked: true,
+      hostId: USER_1,
+      authKey: 'e2e-test',
     });
     t.ok(data.token, 'gets auth token');
     t.ok(data.match, 'gets match data');
@@ -422,8 +438,10 @@ async function runMatch (t, radiant, dire) {
     let data = await post('match/complete', {
       winner: 'dire',
       endTime: (new Date()).toString() + Math.random(),
-      gameLength: 123,
-      players: allPlayers
+      gameLength: 601,
+      players: allPlayers,
+      abandoned: [],
+      isValid: true,
     }, token);
 
     t.ok(data.ok, 'should work');

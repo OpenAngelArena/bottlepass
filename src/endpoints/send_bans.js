@@ -10,7 +10,7 @@ const PlayerEntry = Joi.string();
 
 const SendBansValidator = Joi.object().keys({
   banChoices: Joi.object(),
-  bans: Joi.array().items(Joi.string()),
+  bans: Joi.array().items(Joi.string())
 });
 
 module.exports = SendBans;

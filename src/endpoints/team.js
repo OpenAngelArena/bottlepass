@@ -23,7 +23,7 @@ function OAuth (options) {
     rejectInvite,
     removePlayer: rejectInvite,
     leaveTeam,
-    updateTeam,
+    updateTeam
   };
   const getMethods = {
     invite: getInvite,

@@ -38,7 +38,7 @@ const MatchValidator = Joi.object().keys({
     hero: Joi.string().required(),
     random: Joi.boolean().required(),
     rerandom: Joi.boolean().required()
-  })).default({}),
+  })).default({})
 });
 
 function Match (db) {
