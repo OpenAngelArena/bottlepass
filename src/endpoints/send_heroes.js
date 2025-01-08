@@ -59,8 +59,8 @@ function SendHeroes (options) {
       user.heroPicks = user.heroPicks || {};
       user.heroPicks[pickChoice] = (user.heroPicks[pickChoice] || 0) + 1;
 
-      if (Object.keys(player.popularHeroes).length < 5) {
-        player.popularHeroes = player.heroPicks || {};
+      if (Object.keys(user.popularHeroes).length < 5) {
+        user.popularHeroes = user.heroPicks || {};
       }
       // 1 point for pickin a hero
       user.popularHeroes[pickChoice] = (user.popularHeroes[pickChoice] || user.heroPicks[pickChoice] || user.heroBans[pickChoice] || 0) + 1;
