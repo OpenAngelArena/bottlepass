@@ -38,7 +38,7 @@ function Seasons (options, db) {
 
   stateModel.getOrCreate(STATE_ID)
     .then((data) => {
-      console.log('Starting season', data.currentSeason);
+      console.log('Loaded season data, current season:', data.currentSeason, 'vs desired season:', options.currentSeason);
     });
 
   return {
