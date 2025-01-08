@@ -51,8 +51,19 @@ function SendBans (options) {
 
     await Promise.all(Object.keys(body.banChoices).map(async (steamid) => {
       var user = await options.models.users.getOrCreate(steamid);
+      const banChoice = body.banChoices[steamid];
+      player.popularHeroes = player.popularHeroes || {};
       user.heroBans = user.heroBans || {};
-      user.heroBans[body.banChoices[steamid]] = (user.heroBans[body.banChoices[steamid]] || 0) + 1;
+      user.heroBans = user.heroPicks || {};
+
+      user.heroBans[banChoice] = (user.heroBans[banChoice] || 0) + 1;
+
+      if (Object.keys(player.popularHeroes).length < 5) {
+        player.popularHeroes = player.heroPicks || {};
+      }
+      // half a point for banning a hero
+      user.popularHeroes[banChoice] = (user.popularHeroes[banChoice] || user.heroPicks[banChoice] || user.heroBans[banChoice] || 0) + 0.5;
+
       await options.models.users.put(user);
     }));
 

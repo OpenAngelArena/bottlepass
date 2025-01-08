@@ -138,6 +138,13 @@ function CompleteMatch (options) {
       player.abandonPenalty += 2;
     }
 
+    // decay popular heroes
+    player.popularHeroes = player.popularHeroes || {};
+    Object.keys(player.popularHeroes).forEach((hero) => {
+      player.popularHeroes[hero] = Math.max(0, player.popularHeroes[hero] * 0.99);
+    });
+    console.log(player.popularHeroes);
+
     await options.models.users.put(player);
     return playerDiff;
   }

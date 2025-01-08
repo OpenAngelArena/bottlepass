@@ -55,8 +55,16 @@ function SendHeroes (options) {
 
     await Promise.all(Object.keys(body.picks).map(async (steamid) => {
       var user = await options.models.users.getOrCreate(steamid);
+      const pickChoice = body.picks[steamid].hero;
       user.heroPicks = user.heroPicks || {};
-      user.heroPicks[body.picks[steamid].hero] = (user.heroPicks[body.picks[steamid].hero] || 0) + 1;
+      user.heroPicks[pickChoice] = (user.heroPicks[pickChoice] || 0) + 1;
+
+      if (Object.keys(player.popularHeroes).length < 5) {
+        player.popularHeroes = player.heroPicks || {};
+      }
+      // 1 point for pickin a hero
+      user.popularHeroes[pickChoice] = (user.popularHeroes[pickChoice] || user.heroPicks[pickChoice] || user.heroBans[pickChoice] || 0) + 1;
+
       await options.models.users.put(user);
     }));
 

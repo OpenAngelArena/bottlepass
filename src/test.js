@@ -101,7 +101,7 @@ test('full server test', function (t) {
         isCM: false,
         isRanked: true,
         hostId: USER_1,
-        authKey: 'e2e-test',
+        authKey: 'e2e-test'
       });
       t.fail('auth should fail while in cheats mode');
     } catch (e) {
@@ -116,7 +116,7 @@ test('full server test', function (t) {
         isCM: false,
         isRanked: true,
         hostId: USER_1,
-        authKey: 'e2e-test',
+        authKey: 'e2e-test'
       });
       console.log(data);
       t.ok(data.token, 'gets auth token');
@@ -197,7 +197,7 @@ test('full server test', function (t) {
         gameLength: 601,
         players: [USER_STR_0],
         abandoned: [],
-        isValid: true,
+        isValid: true
       }, token);
 
       t.ok(data.ok, 'should work');
@@ -407,7 +407,7 @@ async function runMatch (t, radiant, dire) {
       isCM: false,
       isRanked: true,
       hostId: USER_1,
-      authKey: 'e2e-test',
+      authKey: 'e2e-test'
     });
     t.ok(data.token, 'gets auth token');
     t.ok(data.match, 'gets match data');
@@ -441,7 +441,7 @@ async function runMatch (t, radiant, dire) {
       gameLength: 601,
       players: allPlayers,
       abandoned: [],
-      isValid: true,
+      isValid: true
     }, token);
 
     t.ok(data.ok, 'should work');
