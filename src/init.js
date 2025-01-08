@@ -45,6 +45,7 @@ function Init (options) {
   router.set('/match/send_teams', require('./endpoints/send_teams')(options));
   router.set('/match/send_bans', require('./endpoints/send_bans')(options));
   router.set('/match/send_heroes', require('./endpoints/send_heroes')(options));
+  router.set('/match/unpopular_heroes', require('./endpoints/unpopular-heroes')(options));
   router.set('/auth', require('./endpoints/auth')(options));
   router.set('/history', require('./endpoints/history')(options));
   router.set('/tournament', require('./endpoints/tournament')(options));
@@ -54,7 +55,6 @@ function Init (options) {
   router.set('/matches/*', require('./endpoints/matches')(options));
   router.set('/active_matches', require('./endpoints/active_matches')(options));
   router.set('/top*', require('./endpoints/top')(options));
-  router.set('/unpopular-heroes', require('./endpoints/unpopular-heroes')(options));
 
   var cors = Corsify({
     'Access-Control-Allow-Headers': 'Authorization, X-Auth-Token, Content-Type, Auth-Checksum'

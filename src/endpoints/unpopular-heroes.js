@@ -70,9 +70,8 @@ function UnpopularHeroes (options) {
     }
 
     sendJSON(req, res, {
-      body: body.heroes,
-      pretty: true,
-      statusCode: 200
+      heroes: body.heroes,
+      ok: true
     });
   }
 }
