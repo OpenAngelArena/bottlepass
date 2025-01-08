@@ -56,9 +56,9 @@ function OAuth (options) {
       var steamid32 = IDConvertor.to32(steamid);
       var user = await options.models.users.getOrCreate(steamid32 + '');
 
-      token = await createToken(options, user);
+      var myToken = await createToken(options, user);
 
-      sendRedirect(options.weburl + '/auth/' + token);
+      sendRedirect(options.weburl + '/auth/' + myToken);
     });
   }
   async function token (req, res, opts) {

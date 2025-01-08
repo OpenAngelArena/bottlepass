@@ -149,7 +149,7 @@ function CompleteMatch (options) {
     return playerDiff;
   }
 
-  async function endFullUnrankedGame (match, abandonedPlayers, steamid) {
+  async function endFullUnrankedGame (match, _abandonedPlayers, steamid) {
     var player = await options.models.users.getOrCreate(steamid + '');
     var winningTeam = match.outcome === 'radiant' ? match.teams.radiant : match.teams.dire;
     var didWin = winningTeam.indexOf(player.steamid) !== -1;
@@ -182,14 +182,15 @@ function CompleteMatch (options) {
     };
   }
 
-  async function endUnrankedGame (steamid) {
-    steamid = steamid + '';
-    var player = await options.models.users.getOrCreate(steamid);
+  // no longer ranked vs unranked games
+  // async function endUnrankedGame (steamid) {
+  //   steamid = steamid + '';
+  //   var player = await options.models.users.getOrCreate(steamid);
 
-    player.matchesFinished = player.matchesFinished + 1;
+  //   player.matchesFinished = player.matchesFinished + 1;
 
-    return options.models.users.put(player);
-  }
+  //   return options.models.users.put(player);
+  // }
 
   /*
 

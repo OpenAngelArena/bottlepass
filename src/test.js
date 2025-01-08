@@ -5,7 +5,6 @@ const rimraf = require('rimraf');
 const Promise = require('bluebird');
 const sha = require('sha.js');
 
-const OAuth = require('./endpoints/oauth');
 const Init = require('./init');
 
 process.on('unhandledRejection', (err) => {
@@ -218,14 +217,12 @@ test('full server test', function (t) {
       t.fail('should be able to get user data');
     }
 
-    var user1MMR = 0;
     try {
       let data = await get('users/' + USER_1);
       console.log(data);
       t.equals(data.steamid, USER_STR_1, 'has steamid as string');
       t.equals(data.matchesFinished, 0, 'disconnected players dont get matchesFinished');
       t.ok(data.unrankedMMR < STARTING_MMR, 'MMR goes down when you win');
-      user1MMR = data.unrankedMMR;
     } catch (e) {
       console.log(e.error);
       t.fail('should be able to get user data');

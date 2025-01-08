@@ -63,14 +63,20 @@ function UnpopularHeroes (options) {
     // we leave at least enough for every player to have 2 choices and then try to remove 1/2 the remaining options
     let heroesRemoved = 0;
     const heroesRemovedGoal = Math.floor((body.heroes.length - (players.length * 2)) * 0.5);
+    const bans = [];
     while (sortedHeroes.length && heroesRemoved < heroesRemovedGoal) {
       var hero = sortedHeroes.shift();
-      body.heroes = body.heroes.filter((h) => h !== hero);
+      if (body.heroes.indexOf(hero) === -1) {
+        continue;
+      }
+      // we don't need to remove them anymore
+      // body.heroes = body.heroes.filter((h) => h !== hero);
+      bans.push(hero);
       heroesRemoved++;
     }
 
     sendJSON(req, res, {
-      heroes: body.heroes,
+      bans,
       ok: true
     });
   }

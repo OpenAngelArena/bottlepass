@@ -1,12 +1,9 @@
 const sendJSON = require('send-data/json');
 const Promise = require('bluebird');
 const Joi = require('joi');
-const partial = require('ap').partial;
 const AuthRequired = require('../auth');
 
 const jsonBody = Promise.promisify(require('body/json'));
-
-const PlayerEntry = Joi.string();
 
 const SendBansValidator = Joi.object().keys({
   banChoices: Joi.object(),

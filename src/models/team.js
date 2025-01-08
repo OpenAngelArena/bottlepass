@@ -65,28 +65,6 @@ function Team (options, db, users) {
   return model;
 }
 
-async function findTeamByPlayer (model, steamid) {
-  return new Promise((resolve, reject) => {
-    const found = [];
-    model.createReadStream()
-      .on('data', function (data) {
-        const teamData = JSON.parse(data.value);
-        const entry = teamData.players.filter(p => p.steamid === steamid);
-        if (entry.length) {
-          found.push(teamData);
-        }
-      })
-      .on('error', function (err) {
-        if (!found) {
-          reject(err);
-        }
-      })
-      .on('end', async function () {
-        resolve(found);
-      });
-  });
-}
-
 async function findTeamByInvite (model, invite) {
   return new Promise((resolve, reject) => {
     let found = false;

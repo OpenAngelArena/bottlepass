@@ -2,7 +2,6 @@ const Promise = require('bluebird');
 const sendJSON = require('send-data/json');
 const sendBoom = require('send-boom');
 const Boom = require('boom');
-const redirect = require('redirecter');
 const { partial } = require('ap');
 const uuidv4 = require('uuid/v4');
 const parseUrl = require('url').parse;

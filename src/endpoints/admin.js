@@ -1,13 +1,9 @@
-const Promise = require('bluebird');
 const sendJSON = require('send-data/json');
 const sendBoom = require('send-boom');
 const Boom = require('boom');
-const redirect = require('redirecter');
 const { partial } = require('ap');
 const parseUrl = require('url').parse;
 const { createToken } = require('./oauth');
-
-const jsonBody = Promise.promisify(require('body/json'));
 
 const AuthRequired = require('../auth');
 
@@ -44,8 +40,7 @@ function OAuth (options) {
     sendBoom(req, res, Boom.badRequest('Unknown action ' + method));
   }
 
-  async function impersonate (req, res, opts) {
-    const { user } = req;
+  async function impersonate (req, res, _opts) {
     const { steamid } = parseUrl(req.url, true).query;
     const impersonatedUser = await options.models.users.getOrCreate(steamid);
 

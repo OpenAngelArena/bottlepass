@@ -25,20 +25,21 @@ async function precallibrate (state, options) {
   var topPlayers = await options.models.mmr.getOrCreate('0');
   topPlayers = topPlayers.players.slice(0, 100);
 
-  // await options.models.seasons.topPlayers.put({
-  //   season: state.currentSeason - 1,
-  //   players: topPlayers
-  // });
+  await options.models.seasons.topPlayers.put({
+    season: state.currentSeason - 1,
+    players: topPlayers
+  });
 
-  // await Promise.all(topPlayers.map(async function (player) {
-  //   var user = await options.models.users.rawGet(player.steamid);
-  //   user.seasonPlacings++;
-  //   if (!user.bestRanking || player.ranking < user.bestRanking) {
-  //     user.bestRanking = player.ranking;
-  //   }
-  //   // console.log(user);
-  //   return options.models.users.put(user);
-  // }));
+  await Promise.all(topPlayers.map(async function (player) {
+    var user = await options.models.users.rawGet(player.steamid);
+    user.seasonPlacings++;
+    if (!user.bestRanking || player.ranking < user.bestRanking) {
+      user.bestRanking = player.ranking;
+    }
+    // console.log(user);
+    return options.models.users.put(user);
+  }));
+
   var allPlayers = await getAllSortedPlayers(options);
   var allSteamids = allPlayers.map((p) => p.steamid);
   var newMMRs = normalDistribute(allSteamids, 700, 1400);
@@ -95,7 +96,8 @@ function normalDistribute (players, min, max) {
     t = 2 * t - 1; // t is now -1 to 1
     var tFactor = t * t * t; // still -1 to 1, curves the way we want
     t *= Math.abs(tFactor);
-    var factor = (t + 1) / 2; // scale to 0-2 then half for 0-1
+    // what was this for? hmm..
+    // var factor = (t + 1) / 2; // scale to 0-2 then half for 0-1
 
     return {
       steamid: steamid,
