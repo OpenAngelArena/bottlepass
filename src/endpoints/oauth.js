@@ -13,12 +13,11 @@ module.exports = OAuth;
 OAuth.createToken = createToken;
 
 async function createToken (options, user) {
-  user = {...user};
+  user = { ...user };
   delete user.matches;
   delete user.heroPicks;
   delete user.heroBans;
   delete user.popularHeroes;
-  delete user.team;
 
   return Jwt.sign({
     type: 'user',
