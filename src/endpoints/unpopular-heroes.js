@@ -48,9 +48,13 @@ function UnpopularHeroes (options) {
 
     var heroCounts = {};
     players.forEach((player) => {
+      let maxPopularityValue = 0;
+      Object.keys(player.popularHeroes).forEach((hero) => {
+        maxPopularityValue = Math.max(maxPopularityValue, player.popularHeroes[hero]);
+      });
       Object.keys(player.popularHeroes).forEach((hero) => {
         if (player.popularHeroes[hero]) {
-          heroCounts[hero] = (heroCounts[hero] || 0) + player.popularHeroes[hero];
+          heroCounts[hero] = (heroCounts[hero] || 0) + (player.popularHeroes[hero] / maxPopularityValue);
         }
       });
     });
@@ -74,6 +78,8 @@ function UnpopularHeroes (options) {
       bans.push(hero);
       heroesRemoved++;
     }
+
+    console.log({ bans });
 
     sendJSON(req, res, {
       bans,
