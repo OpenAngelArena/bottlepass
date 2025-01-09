@@ -66,7 +66,7 @@ function UnpopularHeroes (options) {
     // we want to remove the most picked heroes but leave a large enough pool to play
     // we leave at least enough for every player to have 2 choices and then try to remove 1/2 the remaining options
     let heroesRemoved = 0;
-    const heroesRemovedGoal = Math.floor((body.heroes.length - (players.length * 2)) * 0.5);
+    const heroesRemovedGoal = Math.floor((body.heroes.length - (players.length * 2)) * 0.75);
     const bans = [];
     while (sortedHeroes.length && heroesRemoved < heroesRemovedGoal) {
       var hero = sortedHeroes.shift();
