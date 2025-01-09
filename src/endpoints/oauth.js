@@ -14,6 +14,9 @@ OAuth.createToken = createToken;
 
 async function createToken (options, user) {
   delete user.matches;
+  delete user.userPicks;
+  delete user.userBans;
+  delete user.popularHeroes;
 
   return Jwt.sign({
     type: 'user',
