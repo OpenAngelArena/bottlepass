@@ -56,10 +56,11 @@ function SendHeroes (options) {
       var user = await options.models.users.getOrCreate(steamid);
       const pickChoice = body.picks[steamid].hero;
       user.heroPicks = user.heroPicks || {};
+      user.heroBans = user.heroBans || {};
       user.heroPicks[pickChoice] = (user.heroPicks[pickChoice] || 0) + 1;
 
       if (Object.keys(user.popularHeroes).length < 5) {
-        user.popularHeroes = user.heroPicks || {};
+        user.popularHeroes = {...user.heroPicks} || {};
       }
       // 1 point for pickin a hero
       user.popularHeroes[pickChoice] = (user.popularHeroes[pickChoice] || user.heroPicks[pickChoice] || user.heroBans[pickChoice] || 0) + 1;

@@ -51,12 +51,12 @@ function SendBans (options) {
       const banChoice = body.banChoices[steamid];
       user.popularHeroes = user.popularHeroes || {};
       user.heroBans = user.heroBans || {};
-      user.heroBans = user.heroPicks || {};
+      user.heroPicks = user.heroPicks || {};
 
       user.heroBans[banChoice] = (user.heroBans[banChoice] || 0) + 1;
 
       if (Object.keys(user.popularHeroes).length < 5) {
-        user.popularHeroes = user.heroPicks || {};
+        user.popularHeroes = {...user.heroPicks} || {};
       }
       // half a point for banning a hero
       user.popularHeroes[banChoice] = (user.popularHeroes[banChoice] || user.heroPicks[banChoice] || user.heroBans[banChoice] || 0) + 0.5;
