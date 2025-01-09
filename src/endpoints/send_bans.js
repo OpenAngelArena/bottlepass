@@ -53,7 +53,7 @@ function SendBans (options) {
       user.heroBans = user.heroBans || {};
       user.heroPicks = user.heroPicks || {};
 
-      user.heroBans[banChoice] = (user.heroBans[banChoice] || 0) + 1;
+      user.heroBans[banChoice] = Math.round((user.heroBans[banChoice] || 0) + 1);
 
       if (Object.keys(user.popularHeroes).length < 5) {
         user.popularHeroes = {...user.heroPicks} || {};
