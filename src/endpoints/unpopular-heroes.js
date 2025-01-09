@@ -54,7 +54,7 @@ function UnpopularHeroes (options) {
       });
       Object.keys(player.popularHeroes).forEach((hero) => {
         if (player.popularHeroes[hero]) {
-          heroCounts[hero] = (heroCounts[hero] || 0) + (player.popularHeroes[hero] / maxPopularityValue);
+          heroCounts[hero] = Math.max((heroCounts[hero] || 0), (player.popularHeroes[hero] / maxPopularityValue));
         }
       });
     });
