@@ -74,6 +74,7 @@ function Create (options) {
       userData[user.steamid] = {
         mmr: user.rankedMMR,
         unrankedMMR: user.unrankedMMR,
+        bottlepassLevel: user.bottlepassLevel,
         bottle: user.customBottle
       };
     });
