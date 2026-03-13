@@ -31,9 +31,9 @@ function HeroPopularity (options) {
       }
     }
 
-    if (cached && (Date.now() - cached.lastCalculated) < months * MS_PER_DAY) {
-      return sendJSON(req, res, cached);
-    }
+    // if (cached && (Date.now() - cached.lastCalculated) < months * MS_PER_DAY) {
+    //   return sendJSON(req, res, cached);
+    // }
 
     var result = await recalculate(months);
     return sendJSON(req, res, result);
