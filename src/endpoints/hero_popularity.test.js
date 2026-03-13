@@ -1,23 +1,46 @@
 const test = require('tape');
-const { parseMatchTime, mapToSortedArray } = require('./hero_popularity');
+const { parseMatchTime, parseTimestamp, mapToSortedArray } = require('./hero_popularity');
 
-test('parseMatchTime', function (t) {
-  t.test('numeric string timestamps', function (t) {
-    var now = Date.now();
-    t.equals(parseMatchTime({ startTime: '' + now }), now, 'parses numeric startTime');
-    t.equals(parseMatchTime({ endTime: '' + now }), now, 'parses numeric endTime');
-    t.equals(parseMatchTime({ startTime: '1500000000000' }), 1500000000000, 'parses large numeric string');
+test('parseTimestamp', function (t) {
+  t.test('numeric strings', function (t) {
+    t.equals(parseTimestamp('1500000000000'), 1500000000000, 'parses millisecond timestamp');
+    t.equals(parseTimestamp('12345'), 12345, 'parses small number');
     t.end();
   });
 
-  t.test('date string timestamps', function (t) {
+  t.test('JS date strings', function (t) {
     var dateStr = 'Fri Mar 13 2026 10:30:00 GMT-0700';
     var expected = new Date(dateStr).getTime();
-    t.equals(parseMatchTime({ startTime: dateStr }), expected, 'parses date string startTime');
-    t.equals(parseMatchTime({ endTime: dateStr }), expected, 'parses date string endTime');
+    t.equals(parseTimestamp(dateStr), expected, 'parses JS date string');
     t.end();
   });
 
+  t.test('OAA game client format (MM/DD/YYHH:MM:SS)', function (t) {
+    var result = parseTimestamp('08/14/2415:12:11');
+    var expected = new Date(2024, 7, 14, 15, 12, 11).getTime();
+    t.equals(result, expected, 'parses OAA format correctly');
+
+    result = parseTimestamp('01/08/2516:03:41');
+    expected = new Date(2025, 0, 8, 16, 3, 41).getTime();
+    t.equals(result, expected, 'parses OAA format with leading zeros');
+
+    result = parseTimestamp('12/31/2923:59:59');
+    expected = new Date(2029, 11, 31, 23, 59, 59).getTime();
+    t.equals(result, expected, 'parses end-of-year edge case');
+    t.end();
+  });
+
+  t.test('returns 0 for bad input', function (t) {
+    t.equals(parseTimestamp(null), 0, 'returns 0 for null');
+    t.equals(parseTimestamp(undefined), 0, 'returns 0 for undefined');
+    t.equals(parseTimestamp(''), 0, 'returns 0 for empty string');
+    t.equals(parseTimestamp('garbage'), 0, 'returns 0 for garbage');
+    t.equals(parseTimestamp('not-a-date-at-all'), 0, 'returns 0 for non-date string');
+    t.end();
+  });
+});
+
+test('parseMatchTime', function (t) {
   t.test('prefers endTime over startTime', function (t) {
     t.equals(
       parseMatchTime({ startTime: '1000', endTime: '2000' }),
@@ -27,7 +50,7 @@ test('parseMatchTime', function (t) {
     t.end();
   });
 
-  t.test('falls back to startTime when endTime is missing or undefined', function (t) {
+  t.test('falls back to startTime', function (t) {
     t.equals(parseMatchTime({ startTime: '5000' }), 5000, 'uses startTime when no endTime');
     t.equals(
       parseMatchTime({ startTime: '5000', endTime: undefined }),
@@ -37,10 +60,24 @@ test('parseMatchTime', function (t) {
     t.end();
   });
 
-  t.test('returns 0 for unparseable or missing data', function (t) {
+  t.test('handles OAA format in match objects', function (t) {
+    var expected = new Date(2024, 7, 14, 15, 53, 33).getTime();
+    t.equals(
+      parseMatchTime({ startTime: '08/14/2415:53:33', endTime: '08/14/2415:56:24' }),
+      new Date(2024, 7, 14, 15, 56, 24).getTime(),
+      'prefers endTime in OAA format'
+    );
+    t.equals(
+      parseMatchTime({ startTime: '08/14/2415:53:33' }),
+      expected,
+      'falls back to startTime in OAA format'
+    );
+    t.end();
+  });
+
+  t.test('returns 0 when nothing is parseable', function (t) {
     t.equals(parseMatchTime({}), 0, 'returns 0 for empty object');
-    t.equals(parseMatchTime({ startTime: 'garbage' }), 0, 'returns 0 for garbage startTime');
-    t.equals(parseMatchTime({ startTime: 'not-a-date-at-all' }), 0, 'returns 0 for non-date string');
+    t.equals(parseMatchTime({ startTime: 'garbage' }), 0, 'returns 0 for garbage');
     t.end();
   });
 });

@@ -3,6 +3,7 @@ const parseUrl = require('url').parse;
 
 module.exports = HeroPopularity;
 HeroPopularity.parseMatchTime = parseMatchTime;
+HeroPopularity.parseTimestamp = parseTimestamp;
 HeroPopularity.mapToSortedArray = mapToSortedArray;
 
 var TOP_PLAYERS = 1000;
@@ -121,18 +122,26 @@ function mapToSortedArray (map) {
     });
 }
 
-function parseMatchTime (match) {
-  if (match.endTime) {
-    var end = Number(match.endTime);
-    if (Number.isFinite(end)) return end;
-    var endDate = new Date(match.endTime).getTime();
-    if (Number.isFinite(endDate)) return endDate;
+function parseTimestamp (str) {
+  if (!str) return 0;
+
+  var num = Number(str);
+  if (Number.isFinite(num)) return num;
+
+  var date = new Date(str).getTime();
+  if (Number.isFinite(date)) return date;
+
+  // OAA game client format: "MM/DD/YYHH:MM:SS"
+  var m = str.match(/^(\d{2})\/(\d{2})\/(\d{2})(\d{2}):(\d{2}):(\d{2})$/);
+  if (m) {
+    var year = 2000 + parseInt(m[3], 10);
+    return new Date(year, parseInt(m[1], 10) - 1, parseInt(m[2], 10),
+      parseInt(m[4], 10), parseInt(m[5], 10), parseInt(m[6], 10)).getTime();
   }
-  if (match.startTime) {
-    var start = Number(match.startTime);
-    if (Number.isFinite(start)) return start;
-    var startDate = new Date(match.startTime).getTime();
-    if (Number.isFinite(startDate)) return startDate;
-  }
+
   return 0;
+}
+
+function parseMatchTime (match) {
+  return parseTimestamp(match.endTime) || parseTimestamp(match.startTime);
 }
