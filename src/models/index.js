@@ -9,6 +9,7 @@ const SteamProfile = require('./profile');
 const Seasons = require('./seasons');
 const MatchState = require('./matchstate');
 const Team = require('./team');
+const HeroPopularity = require('./hero_popularity');
 
 module.exports = Models;
 
@@ -27,6 +28,7 @@ function Models (options) {
   const seasons = Seasons(options, createDB('seasons'));
   const matchstate = MatchState(createDB('matchstate'));
   const team = Team(options, createDB('team'), users);
+  const heroPopularity = HeroPopularity(createDB('hero_popularity'));
 
   return {
     users: users,
@@ -35,7 +37,8 @@ function Models (options) {
     seasons: seasons,
     mmr: mmr,
     matchstate: matchstate,
-    team: team
+    team: team,
+    heroPopularity: heroPopularity
   };
 
   function createDB (name) {
